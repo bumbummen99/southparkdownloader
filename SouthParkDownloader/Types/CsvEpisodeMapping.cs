@@ -13,8 +13,8 @@ namespace SouthParkDownloader.Types
     {
       MapProperty( 0, x => x.Season );
       MapProperty( 1, x => x.Number );
-      MapProperty( 1, x => x.Address );
-      MapProperty( 1, x => x.Name );
+      MapProperty( 2, x => x.Address );
+      MapProperty( 3, x => x.Name );
     }
   }
 }

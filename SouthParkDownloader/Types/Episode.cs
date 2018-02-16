@@ -8,9 +8,9 @@ namespace SouthParkDownloader.Types
 {
   class Episode
   {
-    public UInt16 Season;
-    public UInt16 Number;
-    public String Address;
-    public String Name;
+    public UInt16 Season { get; set; }
+    public UInt16 Number { get; set; }
+    public String Address { get; set; }
+    public String Name { get; set; }
   }
 }

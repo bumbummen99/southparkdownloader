@@ -113,6 +113,30 @@ namespace SouthParkDownloader
       Console.WriteLine( "exit        Exits the application" );
     }
 
+    private void Download()
+    {
+      foreach ( Episode episode in m_episodes )
+      {
+        DownloadEpisode( episode );
+      }
+    }
+
+    private void DownloadEpisode( Episode episode, Boolean overwrite = false )
+    {
+      Directory.CreateDirectory( m_dataDiretory + '/' + episode.Season );
+      Directory.CreateDirectory( m_dataDiretory + '/' + episode.Season + '/' + episode.Number );
+
+      String command = m_youtubeDL + " -o '" + m_dataDiretory + '/' + episode.Season + '/' + episode.Number + '/' +"%(title)s.%(ext)s' " + episode.Address;
+
+      System.Diagnostics.Process process = new System.Diagnostics.Process();
+      System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+      startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+      startInfo.FileName = "cmd.exe";
+      startInfo.Arguments = command;
+      process.StartInfo = startInfo;
+      process.Start();
+    }
+
     private Boolean HasIndex()
     {
       if ( !File.Exists( m_indexFile ) )
