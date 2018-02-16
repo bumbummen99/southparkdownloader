@@ -9,6 +9,7 @@ using System.Linq;
 using TinyCsvParser;
 using SouthParkDownloader.Types;
 using System.Text;
+using System.Diagnostics;
 
 namespace SouthParkDownloader
 {
@@ -52,6 +53,8 @@ namespace SouthParkDownloader
       if ( !IsSetup() )
         Setup();
 
+      m_episodes = new ArrayList();
+
       if ( HasIndex() )
         ReadIndexData();
 
@@ -81,7 +84,7 @@ namespace SouthParkDownloader
           break;
 
         case "download":
-          //download video files
+          Download();
           break;
 
         case "process":
@@ -123,18 +126,34 @@ namespace SouthParkDownloader
 
     private void DownloadEpisode( Episode episode, Boolean overwrite = false )
     {
-      Directory.CreateDirectory( m_dataDiretory + '/' + episode.Season );
-      Directory.CreateDirectory( m_dataDiretory + '/' + episode.Season + '/' + episode.Number );
+      Console.WriteLine( "Downloading Episode " + episode.Number + ' ' + episode.Name );
 
-      String command = m_youtubeDL + " -o '" + m_dataDiretory + '/' + episode.Season + '/' + episode.Number + '/' +"%(title)s.%(ext)s' " + episode.Address;
+      String seasonDir = m_dataDiretory + '/' + episode.Season;
+      String episodeDir = seasonDir + '/' + episode.Number;
 
-      System.Diagnostics.Process process = new System.Diagnostics.Process();
-      System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-      startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+      Directory.CreateDirectory( seasonDir );
+      Directory.CreateDirectory( episodeDir );
+
+      String command = '"' + m_youtubeDL + "\" " + episode.Address;
+
+      Process process = new Process();
+      ProcessStartInfo startInfo = new ProcessStartInfo();
+      startInfo.WindowStyle = ProcessWindowStyle.Hidden;
       startInfo.FileName = "cmd.exe";
-      startInfo.Arguments = command;
+      startInfo.RedirectStandardInput = true;
+      startInfo.UseShellExecute = false;
       process.StartInfo = startInfo;
       process.Start();
+
+      using ( StreamWriter sw = process.StandardInput )
+      {
+        if ( sw.BaseStream.CanWrite )
+        {
+          sw.WriteLine( "cd " + episodeDir );
+          sw.WriteLine( command );
+        }
+      }
+      process.WaitForExit();
     }
 
     private Boolean HasIndex()
@@ -174,7 +193,8 @@ namespace SouthParkDownloader
       /* Process services */
       foreach ( TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results )
       {
-        m_episodes.Add( episode.Result ); //Add service to internal list
+        if( episode.Result != null )
+          m_episodes.Add( episode.Result ); //Add service to internal list
       }
       Console.WriteLine( "Index data read successfully" );
     }
