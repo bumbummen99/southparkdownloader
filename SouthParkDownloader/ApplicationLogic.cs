@@ -132,7 +132,7 @@ namespace SouthParkDownloader
       if ( !overwrite && File.Exists( episodeDir + "/dlfinish" ) )
         return;
 
-      Console.WriteLine( "Downloading Episode " + episode.Number + ' ' + episode.Name );
+      Console.WriteLine( "Start downloading Episode " + episode.Number + ' ' + episode.Name );
 
       Directory.CreateDirectory( seasonDir );
       Directory.CreateDirectory( episodeDir );
@@ -197,7 +197,7 @@ namespace SouthParkDownloader
       String[] sortedParts = new String[videoParts.Count];
       foreach ( String part in videoParts )
       {
-        Int32 index = Int32.Parse( part.Substring( part.IndexOf( '.' ) - 1, 1 ) );
+        Int32 index = Int32.Parse( part.Substring( part.IndexOf( ". A" ) - 1, 1 ) );
         if ( index == 0 )
           return;
 
