@@ -6,6 +6,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Linq;
+using TinyCsvParser;
+using SouthParkDownloader.Types;
+using System.Text;
 
 namespace SouthParkDownloader
 {
@@ -15,12 +18,24 @@ namespace SouthParkDownloader
     private String m_dataDiretory;
     private String m_tempDiretory;
 
+    private String m_indexFile
+    {
+      get {
+        return m_dataDiretory + @"\data.csv";
+      }
+    }
+
+    private ArrayList m_episodes;
+
     public ApplicationLogic( String name ) : base( name )
     {
       /* Setup folder structuren */
       m_dependencyDirectory = Directory.CreateDirectory( m_workingDirectory + @"\dep" ).FullName;
       m_dataDiretory = Directory.CreateDirectory( m_workingDirectory + @"\data" ).FullName;
       m_tempDiretory = Directory.CreateDirectory( m_workingDirectory + @"\tmp" ).FullName;
+
+      if ( File.Exists( m_indexFile ) )
+        ReadEpisodesData();
 
       Run();
     }
@@ -39,7 +54,7 @@ namespace SouthParkDownloader
           break;
 
         case "index":
-          Index();
+          ReIndex();
           break;
 
         case "download":
@@ -74,11 +89,13 @@ namespace SouthParkDownloader
       Console.WriteLine( "exit        Exits the application" );
     }
 
-    private void Index()
+    private void ReIndex()
     {
-      File.Delete( m_dataDiretory + @"\data.csv" );
+      File.Delete( m_indexFile );
       WebClient webClient = new WebClient();
-      webClient.DownloadFile( "https://bumbummen99.github.io/southparkdownloader/data.csv", m_dataDiretory + @"\data.csv" );
+      webClient.DownloadFile( "https://bumbummen99.github.io/southparkdownloader/data.csv", m_indexFile );
+
+      ReadEpisodesData();
     }
 
     private void Setup()
@@ -103,7 +120,7 @@ namespace SouthParkDownloader
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe" );
 
       //reindex
-      Index();
+      ReIndex();
 
       Console.WriteLine( "Setup complete, clearing tmp" );
       CleanTemp();
@@ -135,6 +152,34 @@ namespace SouthParkDownloader
       {
         dir.Delete( true );
       }
+    }
+
+    private void ReadEpisodesData()
+    {
+      if ( !File.Exists( m_indexFile ) )
+      {
+        Console.WriteLine( "No index data found!" );
+        return;
+      }
+
+      /* Setup csv parser options */
+      CsvParserOptions csvParserOptions = new CsvParserOptions( false, ';' );
+      CsvEpisodeMapping csvMapper = new CsvEpisodeMapping();
+      CsvParser<Episode> csvParser = new CsvParser<Episode>( csvParserOptions, csvMapper );
+
+      /* Parse csv file */
+      var results = csvParser.ReadFromFile( m_indexFile, Encoding.ASCII ).ToList();
+
+      /* Check if we have a result */
+      if ( results != null && results.Count <= 0 )
+        return;
+
+      /* Process services */
+      foreach ( TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results )
+      {
+        m_episodes.Add( episode.Result ); //Add service to internal list
+      }
+      Console.WriteLine( "Index data read successfully" );
     }
   }
 }
