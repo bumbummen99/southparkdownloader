@@ -12,12 +12,14 @@ namespace SouthParkDownloader
   class ApplicationLogic : Logic
   {
     private String m_dependencyDirectory;
+    private String m_dataDiretory;
     private String m_tempDiretory;
 
     public ApplicationLogic( String name ) : base( name )
     {
       /* Setup folder structuren */
       m_dependencyDirectory = Directory.CreateDirectory( m_workingDirectory + @"\dep" ).FullName;
+      m_dataDiretory = Directory.CreateDirectory( m_workingDirectory + @"\data" ).FullName;
       m_tempDiretory = Directory.CreateDirectory( m_workingDirectory + @"\tmp" ).FullName;
 
       Run();
@@ -74,7 +76,9 @@ namespace SouthParkDownloader
 
     private void Index()
     {
-      //Download current index
+      File.Delete( m_dataDiretory + @"\data.csv" );
+      WebClient webClient = new WebClient();
+      webClient.DownloadFile( "https://bumbummen99.github.io/southparkdownloader/data.csv", m_dataDiretory + @"\data.csv" );
     }
 
     private void Setup()
@@ -97,6 +101,9 @@ namespace SouthParkDownloader
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", m_dependencyDirectory + @"\ffmpeg.exe" );
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffplay.exe", m_dependencyDirectory + @"\ffplay.exe" );
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe" );
+
+      //reindex
+      Index();
 
       Console.WriteLine( "Setup complete, clearing tmp" );
       CleanTemp();
