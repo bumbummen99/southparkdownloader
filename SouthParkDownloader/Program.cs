@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using SouthParkDownloader;
 
 namespace SouthParkDownloader
 {
@@ -10,6 +12,7 @@ namespace SouthParkDownloader
   {
     static void Main( string[] args )
     {
+      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder" );
     }
   }
 }
