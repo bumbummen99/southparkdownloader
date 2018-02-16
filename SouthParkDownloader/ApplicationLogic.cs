@@ -88,7 +88,7 @@ namespace SouthParkDownloader
           break;
 
         case "process":
-          //Merge video files
+          Merge();
           break;
 
         case "help":
@@ -126,10 +126,13 @@ namespace SouthParkDownloader
 
     private void DownloadEpisode( Episode episode, Boolean overwrite = false )
     {
-      Console.WriteLine( "Downloading Episode " + episode.Number + ' ' + episode.Name );
-
       String seasonDir = m_dataDiretory + '/' + episode.Season;
       String episodeDir = seasonDir + '/' + episode.Number;
+
+      if ( !overwrite && File.Exists( episodeDir + "/dlfinish" ) )
+        return;
+
+      Console.WriteLine( "Downloading Episode " + episode.Number + ' ' + episode.Name );
 
       Directory.CreateDirectory( seasonDir );
       Directory.CreateDirectory( episodeDir );
@@ -154,6 +157,80 @@ namespace SouthParkDownloader
         }
       }
       process.WaitForExit();
+
+      File.Create( episodeDir + "/dlfinish" );
+    }
+
+    private void Merge()
+    {
+      foreach ( Episode episode in m_episodes )
+      {
+        MergeEpisode( episode );
+      }
+    }
+
+    private void MergeEpisode( Episode episode )
+    {
+      String seasonDir = m_dataDiretory + '/' + episode.Season;
+      String episodeDir = seasonDir + '/' + episode.Number;
+
+      if ( !File.Exists( episodeDir + "/dlfinish" ) )
+      {
+        Console.WriteLine( "No video files to merge!" );
+        return;
+      }
+
+      if ( File.Exists( episodeDir + "/mergefinish" ) )
+        return;
+
+      String[] files = Directory.GetFiles( episodeDir );
+      ArrayList videoParts = new ArrayList();
+      foreach ( String file in files )
+      {
+        String ext = Path.GetExtension( file );
+        if ( Path.GetExtension( file ) != ".mp4" )
+          continue;
+
+        videoParts.Add( file );
+      }
+
+      String[] sortedParts = new String[videoParts.Count];
+      foreach ( String part in videoParts )
+      {
+        Int32 index = Int32.Parse( part.Substring( part.IndexOf( '.' ) - 1, 1 ) );
+        sortedParts[index - 1] = part;
+      }
+
+      StreamWriter fileList = File.CreateText( episodeDir + "/files.txt" );
+      foreach ( String filePath in sortedParts )
+      {
+        fileList.Write( "file '" + filePath + "'" + fileList.NewLine );
+      }
+      fileList.Close();
+
+      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + episode.Name + ".mp4\"";
+
+      Process process = new Process();
+      ProcessStartInfo startInfo = new ProcessStartInfo();
+      startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+      startInfo.FileName = "cmd.exe";
+      startInfo.RedirectStandardInput = true;
+      startInfo.UseShellExecute = false;
+      process.StartInfo = startInfo;
+      process.Start();
+
+      using ( StreamWriter sw = process.StandardInput )
+      {
+        if ( sw.BaseStream.CanWrite )
+        {
+          sw.WriteLine( "cd " + episodeDir );
+          sw.WriteLine( command );
+        }
+      }
+      process.WaitForExit();
+
+      File.Create( episodeDir + "/mergefinish" );
+
     }
 
     private Boolean HasIndex()
@@ -193,7 +270,7 @@ namespace SouthParkDownloader
       /* Process services */
       foreach ( TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results )
       {
-        if( episode.Result != null )
+        if ( episode.Result != null )
           m_episodes.Add( episode.Result ); //Add service to internal list
       }
       Console.WriteLine( "Index data read successfully" );
