@@ -198,6 +198,9 @@ namespace SouthParkDownloader
       foreach ( String part in videoParts )
       {
         Int32 index = Int32.Parse( part.Substring( part.IndexOf( '.' ) - 1, 1 ) );
+        if ( index == 0 )
+          return;
+
         sortedParts[index - 1] = part;
       }
 
@@ -208,7 +211,7 @@ namespace SouthParkDownloader
       }
       fileList.Close();
 
-      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + episode.Name + ".mp4\"";
+      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + RemoveSpecialCharacters(episode.Name) + ".mp4\"";
 
       Process process = new Process();
       ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -337,6 +340,19 @@ namespace SouthParkDownloader
       {
         dir.Delete( true );
       }
+    }
+
+    public static String RemoveSpecialCharacters( String str )
+    {
+      StringBuilder sb = new StringBuilder();
+      foreach ( Char c in str )
+      {
+        if ( (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ' )
+        {
+          sb.Append( c );
+        }
+      }
+      return sb.ToString();
     }
   }
 }
