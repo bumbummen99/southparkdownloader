@@ -43,7 +43,7 @@ namespace SouthParkDownloader
 
     private ArrayList m_episodes;
 
-    public ApplicationLogic( String name ) : base( name )
+    public ApplicationLogic( String name, String version ) : base( name, version )
     {
       /* Setup folder structuren */
       m_dependencyDirectory = Directory.CreateDirectory( m_workingDirectory + @"\dep" ).FullName;

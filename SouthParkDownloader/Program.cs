@@ -10,9 +10,9 @@ namespace SouthParkDownloader
 {
   class Program
   {
-    static void Main( string[] args )
+    static void Main( String[] args )
     {
-      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder" );
+      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder", "1.0" );
     }
   }
 }

@@ -15,13 +15,16 @@ namespace SouthParkDownloader.Core
 
     /* Application Info */
     protected String m_applicationName;
+    protected String m_applicationVersion;
+
     protected String m_workingDirectory;
 
-    public Logic( String name )
+    public Logic( String name, String version )
     {
       m_applicationName = name;
+      m_applicationVersion = version;
 
-      Console.WriteLine( "Starting " + m_applicationName );
+      Console.WriteLine( "Starting " + m_applicationName + " Version " + version );
 
       m_workingDirectory = Directory.GetCurrentDirectory();
 
