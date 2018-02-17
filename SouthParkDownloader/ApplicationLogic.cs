@@ -1,15 +1,18 @@
-﻿using SouthParkDownloader.Core;
-using SouthParkDownloader.Functionality;
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Linq;
-using TinyCsvParser;
-using SouthParkDownloader.Types;
 using System.Text;
 using System.Diagnostics;
+
+using TinyCsvParser;
+
+using SouthParkDownloader.Core;
+using SouthParkDownloader.Functionality;
+using SouthParkDownloader.Types;
+using SouthParkDownloader.CSVMappings;
 
 namespace SouthParkDownloader
 {
@@ -18,6 +21,7 @@ namespace SouthParkDownloader
     private String m_dependencyDirectory;
     private String m_dataDiretory;
     private String m_tempDiretory;
+    private SystemInfo m_systemInfo;
 
     private String m_indexFile
     {
@@ -45,6 +49,9 @@ namespace SouthParkDownloader
 
     public ApplicationLogic( String name, String version ) : base( name, version )
     {
+      /* Get information about the system */
+      m_systemInfo = (new SystemAnalyzer()).GetInfo();
+
       /* Setup folder structuren */
       m_dependencyDirectory = Directory.CreateDirectory( m_workingDirectory + @"\dep" ).FullName;
       m_dataDiretory = Directory.CreateDirectory( m_workingDirectory + @"\data" ).FullName;
@@ -324,7 +331,10 @@ namespace SouthParkDownloader
 
       //ffmpeg
       Console.WriteLine( "Downloading ffmpeg" );
-      webClient.DownloadFile( "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win64-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip" );
+      if( m_systemInfo.CPUArchitecture == SystemInfo.Architecture.x86_64 )
+        webClient.DownloadFile( "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win64-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip" );
+      else
+        webClient.DownloadFile( "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win32-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip" );
       Console.WriteLine( "Extracting ffmpeg" );
       ZipFile.ExtractToDirectory( m_tempDiretory + @"\ffmpeg-3.4.1.zip", m_tempDiretory );
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", m_dependencyDirectory + @"\ffmpeg.exe" );

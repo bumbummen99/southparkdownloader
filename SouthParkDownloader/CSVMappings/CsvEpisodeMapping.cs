@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SouthParkDownloader.Types;
 using TinyCsvParser.Mapping;
 
-namespace SouthParkDownloader.Types
+namespace SouthParkDownloader.CSVMappings
 {
   class CsvEpisodeMapping : CsvMapping<Episode>
   {
