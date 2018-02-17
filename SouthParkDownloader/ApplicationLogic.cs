@@ -121,6 +121,7 @@ namespace SouthParkDownloader
       foreach ( Episode episode in m_episodes )
       {
         DownloadEpisode( episode );
+        MergeEpisode( episode );
       }
     }
 
@@ -137,28 +138,28 @@ namespace SouthParkDownloader
       Directory.CreateDirectory( seasonDir );
       Directory.CreateDirectory( episodeDir );
 
-      String command = '"' + m_youtubeDL + "\" " + episode.Address;
-
       Process process = new Process();
       ProcessStartInfo startInfo = new ProcessStartInfo();
       startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-      startInfo.FileName = "cmd.exe";
-      startInfo.RedirectStandardInput = true;
+      startInfo.FileName = m_youtubeDL;
       startInfo.UseShellExecute = false;
+      startInfo.WorkingDirectory = episodeDir;
+      startInfo.Arguments = episode.Address;
       process.StartInfo = startInfo;
       process.Start();
-
-      using ( StreamWriter sw = process.StandardInput )
-      {
-        if ( sw.BaseStream.CanWrite )
-        {
-          sw.WriteLine( "cd " + episodeDir );
-          sw.WriteLine( command );
-        }
-      }
       process.WaitForExit();
 
+      if ( process.ExitCode != 0 )
+      {
+        CleanDirectory( episodeDir );
+        Console.WriteLine( "YoutubeDL failed for some reason." );
+        return;
+      }
+
       File.Create( episodeDir + "/dlfinish" );
+#if RELEASE
+      File.SetAttributes( episodeDir + "/dlfinish", File.GetAttributes( episodeDir + "/dlfinish" ) | FileAttributes.Hidden );
+#endif
     }
 
     private void Merge()
@@ -185,25 +186,27 @@ namespace SouthParkDownloader
 
       String[] files = Directory.GetFiles( episodeDir );
       ArrayList videoParts = new ArrayList();
-      foreach ( String file in files )
+      foreach ( String _file in files )
       {
-        String ext = Path.GetExtension( file );
-        if ( Path.GetExtension( file ) != ".mp4" )
+        String ext = Path.GetExtension( _file );
+        if ( Path.GetExtension( _file ) != ".mp4" )
           continue;
 
-        videoParts.Add( file );
+        videoParts.Add( _file );
       }
 
+      /* Sort paths */
       String[] sortedParts = new String[videoParts.Count];
       foreach ( String part in videoParts )
       {
         Int32 index = Int32.Parse( part.Substring( part.IndexOf( ". A" ) - 1, 1 ) );
         if ( index == 0 )
-          return;
+          return; //English episode
 
         sortedParts[index - 1] = part;
       }
 
+      /* Output parts into files.txt for ffmpeg */
       StreamWriter fileList = File.CreateText( episodeDir + "/files.txt" );
       foreach ( String filePath in sortedParts )
       {
@@ -211,28 +214,42 @@ namespace SouthParkDownloader
       }
       fileList.Close();
 
-      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + RemoveSpecialCharacters(episode.Name) + ".mp4\"";
+      String outputFileName = RemoveSpecialCharacters( episode.Name ) + ".mp4";
 
       Process process = new Process();
       ProcessStartInfo startInfo = new ProcessStartInfo();
       startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-      startInfo.FileName = "cmd.exe";
-      startInfo.RedirectStandardInput = true;
+      startInfo.FileName = m_ffmpeg;
       startInfo.UseShellExecute = false;
+      startInfo.WorkingDirectory = episodeDir;
+      startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + outputFileName + '"';
       process.StartInfo = startInfo;
       process.Start();
-
-      using ( StreamWriter sw = process.StandardInput )
-      {
-        if ( sw.BaseStream.CanWrite )
-        {
-          sw.WriteLine( "cd " + episodeDir );
-          sw.WriteLine( command );
-        }
-      }
       process.WaitForExit();
 
+      if ( process.ExitCode != 0 )
+      {
+        //CleanDirectory( episodeDir );
+        Console.WriteLine( "ffmpeg failed for some reason." );
+        return;
+      }
+
+      /* Delete previous data after successfull concat */
+      foreach ( String oldFile in sortedParts )
+      {
+        File.Delete( oldFile );
+      }
+      File.Delete( episodeDir + "/files.txt" );
+
+      /* Add meta data */
+      TagLib.File file = TagLib.File.Create( episodeDir + '/' + outputFileName ); // Change file path accordingly.
+      file.Tag.Title = episode.Name;
+      file.Save();
+
       File.Create( episodeDir + "/mergefinish" );
+#if RELEASE
+      File.SetAttributes( episodeDir + "/mergefinish", File.GetAttributes( episodeDir + "/mergefinish" ) | FileAttributes.Hidden );
+#endif
 
     }
 
@@ -288,8 +305,8 @@ namespace SouthParkDownloader
 
     private void Setup()
     {
-      CleanDependencys();
-      CleanTemp();
+      CleanDirectory( m_dependencyDirectory );
+      CleanDirectory( m_tempDiretory );
 
       /* Download dependencies */
       WebClient webClient = new WebClient();
@@ -311,26 +328,12 @@ namespace SouthParkDownloader
       DownloadIndex();
 
       Console.WriteLine( "Setup complete, clearing tmp" );
-      CleanTemp();
+      CleanDirectory( m_tempDiretory );
     }
 
-    private void CleanDependencys()
+    private void CleanDirectory( String directory )
     {
-      DirectoryInfo di = new DirectoryInfo( m_dependencyDirectory );
-
-      foreach ( FileInfo file in di.GetFiles() )
-      {
-        file.Delete();
-      }
-      foreach ( DirectoryInfo dir in di.GetDirectories() )
-      {
-        dir.Delete( true );
-      }
-    }
-
-    private void CleanTemp()
-    {
-      DirectoryInfo di = new DirectoryInfo( m_tempDiretory );
+      DirectoryInfo di = new DirectoryInfo( directory );
 
       foreach ( FileInfo file in di.GetFiles() )
       {
