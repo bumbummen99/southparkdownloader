@@ -121,6 +121,7 @@ namespace SouthParkDownloader
       foreach ( Episode episode in m_episodes )
       {
         DownloadEpisode( episode );
+        MergeEpisode( episode );
       }
     }
 
@@ -156,9 +157,19 @@ namespace SouthParkDownloader
           sw.WriteLine( command );
         }
       }
+
       process.WaitForExit();
 
+      if ( process.ExitCode != 0 )
+      {
+        CleanDirectory( episodeDir );
+        Console.WriteLine( "YoutubeDL failed for some reason." );
+      }
+
       File.Create( episodeDir + "/dlfinish" );
+#if RELEASE
+      File.SetAttributes( episodeDir + "/dlfinish", File.GetAttributes( episodeDir + "/dlfinish" ) | FileAttributes.Hidden );
+#endif
     }
 
     private void Merge()
@@ -199,7 +210,7 @@ namespace SouthParkDownloader
       {
         Int32 index = Int32.Parse( part.Substring( part.IndexOf( ". A" ) - 1, 1 ) );
         if ( index == 0 )
-          return;
+          return; //English episode
 
         sortedParts[index - 1] = part;
       }
@@ -211,13 +222,14 @@ namespace SouthParkDownloader
       }
       fileList.Close();
 
-      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + RemoveSpecialCharacters(episode.Name) + ".mp4\"";
+      String command = '"' + m_ffmpeg + "\" -f concat -safe 0 -i files.txt -c copy \"" + RemoveSpecialCharacters( episode.Name ) + ".mp4\"";
 
       Process process = new Process();
       ProcessStartInfo startInfo = new ProcessStartInfo();
       startInfo.WindowStyle = ProcessWindowStyle.Hidden;
       startInfo.FileName = "cmd.exe";
       startInfo.RedirectStandardInput = true;
+      startInfo.RedirectStandardOutput = true;
       startInfo.UseShellExecute = false;
       process.StartInfo = startInfo;
       process.Start();
@@ -230,9 +242,23 @@ namespace SouthParkDownloader
           sw.WriteLine( command );
         }
       }
+
+      while ( !process.StandardOutput.EndOfStream )
+      {
+        String line = process.StandardOutput.ReadLine();
+        if ( line.ToLower().Contains( "invalid" ) )
+        {
+          Console.WriteLine( "FFMPEG failed for some reason!" );
+          return;
+        }
+      }
+
       process.WaitForExit();
 
       File.Create( episodeDir + "/mergefinish" );
+#if RELEASE
+      File.SetAttributes( episodeDir + "/mergefinish", File.GetAttributes( episodeDir + "/mergefinish" ) | FileAttributes.Hidden );
+#endif
 
     }
 
@@ -288,8 +314,8 @@ namespace SouthParkDownloader
 
     private void Setup()
     {
-      CleanDependencys();
-      CleanTemp();
+      CleanDirectory( m_dependencyDirectory );
+      CleanDirectory( m_tempDiretory );
 
       /* Download dependencies */
       WebClient webClient = new WebClient();
@@ -311,26 +337,12 @@ namespace SouthParkDownloader
       DownloadIndex();
 
       Console.WriteLine( "Setup complete, clearing tmp" );
-      CleanTemp();
+      CleanDirectory( m_tempDiretory );
     }
 
-    private void CleanDependencys()
+    private void CleanDirectory( String directory )
     {
-      DirectoryInfo di = new DirectoryInfo( m_dependencyDirectory );
-
-      foreach ( FileInfo file in di.GetFiles() )
-      {
-        file.Delete();
-      }
-      foreach ( DirectoryInfo dir in di.GetDirectories() )
-      {
-        dir.Delete( true );
-      }
-    }
-
-    private void CleanTemp()
-    {
-      DirectoryInfo di = new DirectoryInfo( m_tempDiretory );
+      DirectoryInfo di = new DirectoryInfo( directory );
 
       foreach ( FileInfo file in di.GetFiles() )
       {
