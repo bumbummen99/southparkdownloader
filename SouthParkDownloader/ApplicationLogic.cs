@@ -75,12 +75,7 @@ namespace SouthParkDownloader
           break;
 
         case "index":
-          ReadIndexData();
-          break;
-
-        case "updateindex":
-          DownloadIndex();
-          ReadIndexData();
+          ReadIndexData( cmd.HasArgument( "update" ) );
           break;
 
         case "download":
@@ -109,7 +104,7 @@ namespace SouthParkDownloader
     {
       Console.WriteLine( "setup       Starts the grabbing process. Place data.csv next to the executable." );
       Console.WriteLine( "index       Load the index file containing episodes from southpark.de" );
-      Console.WriteLine( "updateindex Updates and reindexes the index file." );
+      Console.WriteLine( "  update    Updates and reindexes the index file.\n" );
       Console.WriteLine( "download    Download the episode from the current index." );
       Console.WriteLine( "process     Merge the episode parts into single files." );
       Console.WriteLine( "help        Show information about commands" );
@@ -273,8 +268,14 @@ namespace SouthParkDownloader
       webClient.DownloadFile( "https://bumbummen99.github.io/southparkdownloader/data.csv", m_indexFile );
     }
 
-    private void ReadIndexData()
+    private void ReadIndexData( Boolean update = false )
     {
+      if ( update && File.Exists( m_indexFile ) )
+      {
+        File.Delete( m_indexFile );
+        DownloadIndex();
+      }
+
       if ( !File.Exists( m_indexFile ) )
       {
         Console.WriteLine( "No index data found!" );
@@ -331,7 +332,7 @@ namespace SouthParkDownloader
       File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe" );
 
       //reindex
-      DownloadIndex();
+      ReadIndexData( true );
 
       Console.WriteLine( "Setup complete, clearing tmp" );
       CleanDirectory( m_tempDiretory );
