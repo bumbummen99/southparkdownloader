@@ -156,6 +156,12 @@ namespace SouthParkDownloader
         return;
       }
 
+      if ( process.ExitCode != 0 )
+      {
+        CleanDirectory( episodeDir );
+        Console.WriteLine( "YoutubeDL failed for some reason." );
+      }
+
       File.Create( episodeDir + "/dlfinish" );
 #if RELEASE
       File.SetAttributes( episodeDir + "/dlfinish", File.GetAttributes( episodeDir + "/dlfinish" ) | FileAttributes.Hidden );
