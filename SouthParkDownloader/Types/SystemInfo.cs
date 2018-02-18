@@ -12,5 +12,8 @@ namespace SouthParkDownloader.Types
       x86,
       x86_64
     }
+
+    public SystemInfo()
+    { }
   }
 }

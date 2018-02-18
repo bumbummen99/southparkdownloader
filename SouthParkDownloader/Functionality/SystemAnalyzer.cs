@@ -15,6 +15,8 @@ namespace SouthParkDownloader.Functionality
 
     public SystemAnalyzer()
     {
+      m_info = new SystemInfo();
+
       m_info.OS = Environment.OSVersion;
       m_info.CPUArchitecture = Environment.Is64BitOperatingSystem ? SystemInfo.Architecture.x86_64 : SystemInfo.Architecture.x86;
     }
