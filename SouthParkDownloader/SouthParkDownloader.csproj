@@ -56,10 +56,12 @@
     <Compile Include="ApplicationLogic.cs" />
     <Compile Include="Core\Logic.cs" />
     <Compile Include="Functionality\CLParser.cs" />
+    <Compile Include="Functionality\SystemAnalyzer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSVMappings\CsvEpisodeMapping.cs" />
     <Compile Include="Types\Episode.cs" />
+    <Compile Include="Types\SystemInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
