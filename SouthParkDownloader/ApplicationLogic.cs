@@ -16,363 +16,385 @@ using SouthParkDownloader.CSVMappings;
 
 namespace SouthParkDownloader
 {
-  class ApplicationLogic : Logic
-  {
-    private String m_dependencyDirectory;
-    private String m_dataDiretory;
-    private String m_tempDiretory;
-    private SystemInfo m_systemInfo;
-
-    private String m_indexFile
+    class ApplicationLogic : Logic
     {
-      get
-      {
-        return m_dataDiretory + @"\data.csv";
-      }
-    }
-    private String m_youtubeDL
-    {
-      get
-      {
-        return m_dependencyDirectory + @"\youtube-dl.exe";
-      }
-    }
-    private String m_ffmpeg
-    {
-      get
-      {
-        return m_dependencyDirectory + @"\ffmpeg.exe";
-      }
-    }
+        private String m_dependencyDirectory;
+        private String m_dataDiretory;
+        private String m_tempDiretory;
+        private SystemInfo m_systemInfo;
 
-    private ArrayList m_episodes;
+        private String m_indexFile
+        {
+            get
+            {
+                return m_dataDiretory + @"\data.csv";
+            }
+        }
+        private String m_youtubeDL
+        {
+            get
+            {
+                return m_dependencyDirectory + @"\youtube-dl.exe";
+            }
+        }
+        private String m_ffmpeg
+        {
+            get
+            {
+                return m_dependencyDirectory + @"\ffmpeg.exe";
+            }
+        }
 
-    public ApplicationLogic( String name, String version ) : base( name, version )
-    {
-      /* Get information about the system */
-      m_systemInfo = (new SystemAnalyzer()).GetInfo();
+        private ArrayList m_episodes;
 
-      /* Setup folder structuren */
-      m_dependencyDirectory = Directory.CreateDirectory( m_workingDirectory + @"\dep" ).FullName;
-      m_dataDiretory = Directory.CreateDirectory( m_workingDirectory + @"\data" ).FullName;
-      m_tempDiretory = Directory.CreateDirectory( m_workingDirectory + @"\tmp" ).FullName;
+        public ApplicationLogic(String name, String version) : base(name, version)
+        {
+            /* Get information about the system */
+            m_systemInfo = (new SystemAnalyzer()).GetInfo();
 
-      if ( !IsSetup() )
-        Setup();
+            /* Setup folder structuren */
+            m_dependencyDirectory = Directory.CreateDirectory(m_workingDirectory + @"\dep").FullName;
+            m_dataDiretory = Directory.CreateDirectory(m_workingDirectory + @"\data").FullName;
+            m_tempDiretory = Directory.CreateDirectory(m_workingDirectory + @"\tmp").FullName;
 
-      m_episodes = new ArrayList();
+            if (!IsSetup())
+                Setup();
 
-      if ( HasIndex() )
-        ReadIndexData();
+            m_episodes = new ArrayList();
 
-      Run();
-    }
+            if (HasIndex())
+                ReadIndexData();
 
-    override public void Tick()
-    {
-      //Get user Input
-      Console.Write( "$" );
-      CLParser cmd = new CLParser( Console.ReadLine() );
+            Run();
+        }
 
-      //Parse command
-      switch ( cmd.Command )
-      {
-        case "setup":
-          Setup();
-          break;
+        override public void Tick()
+        {
+            //Get user Input
+            Console.Write("$");
+            CLParser cmd = new CLParser(Console.ReadLine());
 
-        case "index":
-          ReadIndexData( cmd.HasArgument( "update" ) );
-          break;
+            //Parse command
+            switch (cmd.Command)
+            {
+                case "setup":
+                    Setup();
+                    break;
 
-        case "download":
-          Download();
-          break;
+                case "index":
+                    ReadIndexData(cmd.HasArgument("update"));
+                    break;
 
-        case "process":
-          Merge();
-          break;
+                case "download":
+                    Download();
+                    break;
 
-        case "help":
-          PostHelp();
-          break;
+                case "process":
+                    Merge();
+                    break;
 
-        case "exit":
-          m_exit = true;
-          break;
+                case "help":
+                    PostHelp();
+                    break;
 
-        default:
-          Console.WriteLine( "Unknown Command \"" + cmd.Command + "\". Enter \"help\" for a list of the available commands." );
-          break;
-      }
-    }
+                case "exit":
+                    m_exit = true;
+                    break;
 
-    private void PostHelp()
-    {
-      Console.WriteLine( "setup       Starts the grabbing process. Place data.csv next to the executable." );
-      Console.WriteLine( "index       Load the index file containing episodes from southpark.de" );
-      Console.WriteLine( "  update    Updates and reindexes the index file.\n" );
-      Console.WriteLine( "download    Download the episode from the current index." );
-      Console.WriteLine( "process     Merge the episode parts into single files." );
-      Console.WriteLine( "help        Show information about commands" );
-      Console.WriteLine( "exit        Exits the application" );
-    }
+                default:
+                    Console.WriteLine("Unknown Command \"" + cmd.Command + "\". Enter \"help\" for a list of the available commands.");
+                    break;
+            }
+        }
 
-    private void Download()
-    {
-      foreach ( Episode episode in m_episodes )
-      {
-        DownloadEpisode( episode );
-        MergeEpisode( episode );
-      }
-    }
+        private void PostHelp()
+        {
+            Console.WriteLine("setup       Starts the grabbing process. Place data.csv next to the executable.");
+            Console.WriteLine("index       Load the index file containing episodes from southpark.de");
+            Console.WriteLine("  update    Updates and reindexes the index file.\n");
+            Console.WriteLine("download    Download the episode from the current index.");
+            Console.WriteLine("process     Merge the episode parts into single files.");
+            Console.WriteLine("help        Show information about commands");
+            Console.WriteLine("exit        Exits the application");
+        }
 
-    private void DownloadEpisode( Episode episode, Boolean overwrite = false )
-    {
-      String seasonDir = m_dataDiretory + '/' + episode.Season;
-      String episodeDir = seasonDir + '/' + episode.Number;
+        private void Download()
+        {
+            foreach (Episode episode in m_episodes)
+            {
+                DownloadEpisode(episode);
+                MergeEpisode(episode);
+            }
+        }
 
-      if ( !overwrite && File.Exists( episodeDir + "/dlfinish" ) )
-        return;
+        private void DownloadEpisode(Episode episode, Boolean overwrite = false)
+        {
+            String seasonDir = m_dataDiretory + '/' + episode.Season;
+            String episodeDir = seasonDir + '/' + episode.Number;
 
-      Console.WriteLine( "Start downloading Episode " + episode.Number + ' ' + episode.Name );
+            if (!overwrite && File.Exists(episodeDir + "/dlfinish"))
+                return;
 
-      Directory.CreateDirectory( seasonDir );
-      Directory.CreateDirectory( episodeDir );
+            Console.WriteLine("Start downloading Episode " + episode.Number + ' ' + episode.Name);
 
-      Process process = new Process();
-      ProcessStartInfo startInfo = new ProcessStartInfo();
-      startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-      startInfo.FileName = m_youtubeDL;
-      startInfo.UseShellExecute = false;
-      startInfo.WorkingDirectory = episodeDir;
-      startInfo.Arguments = episode.Address;
-      process.StartInfo = startInfo;
-      process.Start();
-      process.WaitForExit();
+            Directory.CreateDirectory(seasonDir);
+            Directory.CreateDirectory(episodeDir);
 
-      if ( process.ExitCode != 0 )
-      {
-        CleanDirectory( episodeDir );
-        Console.WriteLine( "YoutubeDL failed for some reason." );
-        return;
-      }
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.FileName = m_youtubeDL;
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = episodeDir;
+            startInfo.Arguments = episode.Address;
+            process.StartInfo = startInfo;
+            process.Start();
+            process.WaitForExit();
 
-      if ( process.ExitCode != 0 )
-      {
-        CleanDirectory( episodeDir );
-        Console.WriteLine( "YoutubeDL failed for some reason." );
-      }
+            if (process.ExitCode != 0)
+            {
+                CleanDirectory(episodeDir);
+                Console.WriteLine("YoutubeDL failed for some reason.");
+                return;
+            }
 
-      File.Create( episodeDir + "/dlfinish" );
+            String[] files = Directory.GetFiles(episodeDir);
+            ArrayList videoParts = new ArrayList();
+            foreach (String _file in files)
+            {
+                String extension = Path.GetExtension(_file);
+                String filename = Path.GetFileNameWithoutExtension(_file);
+                if (extension != ".mp4")
+                    continue;
+
+                Int32 index = 0;
+                if (filename.Contains(". Ak-") || filename.Contains(". Akt")) //Deutsch
+                    index = Int32.Parse(filename.Substring(filename.IndexOf(". Ak") - 1, 1));
+                else if(filename.Contains("Akt"))
+                    index = Int32.Parse(filename.Substring(filename.IndexOf("Akt ") + 4, 1));
+                else if(filename.Contains("Teil "))
+                    index = Int32.Parse(filename.Substring(filename.IndexOf("Teil ") + 5, 1));
+                else //Englisch
+                    index = Int32.Parse(filename.Substring(filename.IndexOf("Act ") + 4, 1));
+
+                System.IO.File.Move(_file, Path.GetDirectoryName(_file) +"/part"+ index + extension);
+                videoParts.Add(_file);
+            }
+
+            File.Create(episodeDir + "/dlfinish");
 #if RELEASE
       File.SetAttributes( episodeDir + "/dlfinish", File.GetAttributes( episodeDir + "/dlfinish" ) | FileAttributes.Hidden );
 #endif
-    }
+        }
 
-    private void Merge()
-    {
-      foreach ( Episode episode in m_episodes )
-      {
-        MergeEpisode( episode );
-      }
-    }
+        private void Merge()
+        {
+            foreach (Episode episode in m_episodes)
+            {
+                MergeEpisode(episode);
+            }
+        }
 
-    private void MergeEpisode( Episode episode )
-    {
-      String seasonDir = m_dataDiretory + '/' + episode.Season;
-      String episodeDir = seasonDir + '/' + episode.Number;
+        private void MergeEpisode(Episode episode)
+        {
+            String seasonDir = m_dataDiretory + '/' + episode.Season;
+            String episodeDir = seasonDir + '/' + episode.Number;
 
-      if ( !File.Exists( episodeDir + "/dlfinish" ) )
-      {
-        Console.WriteLine( "No video files to merge!" );
-        return;
-      }
+            if (!File.Exists(episodeDir + "/dlfinish"))
+            {
+                Console.WriteLine("No video files to merge!");
+                return;
+            }
 
-      if ( File.Exists( episodeDir + "/mergefinish" ) )
-        return;
+            if (File.Exists(episodeDir + "/mergefinish"))
+                return;
 
-      String[] files = Directory.GetFiles( episodeDir );
-      ArrayList videoParts = new ArrayList();
-      foreach ( String _file in files )
-      {
-        String ext = Path.GetExtension( _file );
-        if ( Path.GetExtension( _file ) != ".mp4" )
-          continue;
+            String[] files = Directory.GetFiles(episodeDir);
+            ArrayList videoParts = new ArrayList();
+            foreach (String _file in files)
+            {
+                String ext = Path.GetExtension(_file);
+                if (Path.GetExtension(_file) != ".mp4")
+                    continue;
 
-        videoParts.Add( _file );
-      }
+                videoParts.Add(_file);
+            }
 
-      /* Sort paths */
-      String[] sortedParts = new String[videoParts.Count];
-      foreach ( String part in videoParts )
-      {
-        Int32 index = Int32.Parse( part.Substring( part.IndexOf( ". A" ) - 1, 1 ) );
-        if ( index == 0 )
-          return; //English episode
+            /* Sort paths */
+            String[] sortedParts = new String[videoParts.Count];
+            foreach (String part in videoParts)
+            {
+                Int32 index = Int32.Parse(part.Substring(part.IndexOf("part") + 4, 1));
+                if (index == 0)
+                    return; //English episode
 
-        sortedParts[index - 1] = part;
-      }
+                if (index - 1 > 0 && sortedParts[index - 2] == null)
+                {
+                    Console.WriteLine("Missing part " + (index - 1));
+                    return;
+                }
+                sortedParts[index - 1] = part;
+            }
 
-      /* Output parts into files.txt for ffmpeg */
-      StreamWriter fileList = File.CreateText( episodeDir + "/files.txt" );
-      foreach ( String filePath in sortedParts )
-      {
-        fileList.Write( "file '" + filePath + "'" + fileList.NewLine );
-      }
-      fileList.Close();
+            /* Output parts into files.txt for ffmpeg */
+            StreamWriter fileList = File.CreateText(episodeDir + "/files.txt");
+            foreach (String filePath in sortedParts)
+            {
+                fileList.Write("file '" + filePath + '\'' + fileList.NewLine);
+            }
+            fileList.Close();
 
-      String outputFileName = RemoveSpecialCharacters( episode.Name ) + ".mp4";
+            String outputFileName = RemoveSpecialCharacters(episode.Name) + ".mp4";
 
-      Process process = new Process();
-      ProcessStartInfo startInfo = new ProcessStartInfo();
-      startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-      startInfo.FileName = m_ffmpeg;
-      startInfo.UseShellExecute = false;
-      startInfo.WorkingDirectory = episodeDir;
-      startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + outputFileName + '"';
-      process.StartInfo = startInfo;
-      process.Start();
-      process.WaitForExit();
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.FileName = m_ffmpeg;
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = episodeDir;
+            startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + outputFileName + '"';
+            process.StartInfo = startInfo;
+            process.Start();
+            process.WaitForExit();
 
-      if ( process.ExitCode != 0 )
-      {
-        //CleanDirectory( episodeDir );
-        Console.WriteLine( "ffmpeg failed for some reason." );
-        return;
-      }
+            if (process.ExitCode != 0)
+            {
+                //CleanDirectory( episodeDir );
+                Console.WriteLine("ffmpeg failed for some reason.");
+                return;
+            }
 
-      /* Delete previous data after successfull concat */
-      foreach ( String oldFile in sortedParts )
-      {
-        File.Delete( oldFile );
-      }
-      File.Delete( episodeDir + "/files.txt" );
+            /* Delete previous data after successfull concat */
+            foreach (String oldFile in sortedParts)
+            {
+                File.Delete(oldFile);
+            }
+            File.Delete(episodeDir + "/files.txt");
 
-      /* Add meta data */
-      TagLib.File file = TagLib.File.Create( episodeDir + '/' + outputFileName ); // Change file path accordingly.
-      file.Tag.Title = episode.Name;
-      file.Save();
+            /* Add meta data */
+            TagLib.File file = TagLib.File.Create(episodeDir + '/' + outputFileName); // Change file path accordingly.
+            file.Tag.Title = episode.Name;
+            file.Save();
 
-      File.Create( episodeDir + "/mergefinish" );
+            File.Create(episodeDir + "/mergefinish");
 #if RELEASE
       File.SetAttributes( episodeDir + "/mergefinish", File.GetAttributes( episodeDir + "/mergefinish" ) | FileAttributes.Hidden );
 #endif
 
-    }
-
-    private Boolean HasIndex()
-    {
-      if ( !File.Exists( m_indexFile ) )
-        return false;
-      return true;
-    }
-
-    private void DownloadIndex()
-    {
-      File.Delete( m_indexFile );
-      WebClient webClient = new WebClient();
-      webClient.DownloadFile( "https://bumbummen99.github.io/southparkdownloader/data.csv", m_indexFile );
-    }
-
-    private void ReadIndexData( Boolean update = false )
-    {
-      if ( update && File.Exists( m_indexFile ) )
-      {
-        File.Delete( m_indexFile );
-        DownloadIndex();
-      }
-
-      if ( !File.Exists( m_indexFile ) )
-      {
-        Console.WriteLine( "No index data found!" );
-        return;
-      }
-
-      /* Setup csv parser options */
-      CsvParserOptions csvParserOptions = new CsvParserOptions( false, ';' );
-      CsvEpisodeMapping csvMapper = new CsvEpisodeMapping();
-      CsvParser<Episode> csvParser = new CsvParser<Episode>( csvParserOptions, csvMapper );
-
-      /* Parse csv file */
-      var results = csvParser.ReadFromFile( m_indexFile, Encoding.ASCII ).ToList();
-
-      /* Check if we have a result */
-      if ( results != null && results.Count <= 0 )
-        return;
-
-      /* Process services */
-      foreach ( TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results )
-      {
-        if ( episode.Result != null )
-          m_episodes.Add( episode.Result ); //Add service to internal list
-      }
-      Console.WriteLine( "Index data read successfully" );
-    }
-
-    private Boolean IsSetup()
-    {
-      if ( !File.Exists( m_youtubeDL ) || !File.Exists( m_ffmpeg ) || !HasIndex() )
-        return false;
-      return true;
-    }
-
-    private void Setup()
-    {
-      CleanDirectory( m_dependencyDirectory );
-      CleanDirectory( m_tempDiretory );
-
-      /* Download dependencies */
-      WebClient webClient = new WebClient();
-
-      //youtbe-dl
-      Console.WriteLine( "Downloading youtube-dl" );
-      webClient.DownloadFile( "https://yt-dl.org/downloads/latest/youtube-dl.exe", m_dependencyDirectory + @"\youtube-dl.exe" );
-
-      //ffmpeg
-      Console.WriteLine( "Downloading ffmpeg" );
-      if( m_systemInfo.CPUArchitecture == SystemInfo.Architecture.x86_64 )
-        webClient.DownloadFile( "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win64-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip" );
-      else
-        webClient.DownloadFile( "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win32-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip" );
-      Console.WriteLine( "Extracting ffmpeg" );
-      ZipFile.ExtractToDirectory( m_tempDiretory + @"\ffmpeg-3.4.1.zip", m_tempDiretory );
-      File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", m_dependencyDirectory + @"\ffmpeg.exe" );
-      File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffplay.exe", m_dependencyDirectory + @"\ffplay.exe" );
-      File.Move( m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe" );
-
-      //reindex
-      ReadIndexData( true );
-
-      Console.WriteLine( "Setup complete, clearing tmp" );
-      CleanDirectory( m_tempDiretory );
-    }
-
-    private void CleanDirectory( String directory )
-    {
-      DirectoryInfo di = new DirectoryInfo( directory );
-
-      foreach ( FileInfo file in di.GetFiles() )
-      {
-        file.Delete();
-      }
-      foreach ( DirectoryInfo dir in di.GetDirectories() )
-      {
-        dir.Delete( true );
-      }
-    }
-
-    public static String RemoveSpecialCharacters( String str )
-    {
-      StringBuilder sb = new StringBuilder();
-      foreach ( Char c in str )
-      {
-        if ( (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ' )
-        {
-          sb.Append( c );
         }
-      }
-      return sb.ToString();
+
+        private Boolean HasIndex()
+        {
+            if (!File.Exists(m_indexFile))
+                return false;
+            return true;
+        }
+
+        private void DownloadIndex()
+        {
+            File.Delete(m_indexFile);
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.csv", m_indexFile);
+        }
+
+        private void ReadIndexData(Boolean update = false)
+        {
+            if (update && File.Exists(m_indexFile))
+            {
+                File.Delete(m_indexFile);
+                DownloadIndex();
+            }
+
+            if (!File.Exists(m_indexFile))
+            {
+                Console.WriteLine("No index data found!");
+                return;
+            }
+
+            /* Setup csv parser options */
+            CsvParserOptions csvParserOptions = new CsvParserOptions(false, ';');
+            CsvEpisodeMapping csvMapper = new CsvEpisodeMapping();
+            CsvParser<Episode> csvParser = new CsvParser<Episode>(csvParserOptions, csvMapper);
+
+            /* Parse csv file */
+            var results = csvParser.ReadFromFile(m_indexFile, Encoding.ASCII).ToList();
+
+            /* Check if we have a result */
+            if (results != null && results.Count <= 0)
+                return;
+
+            /* Process services */
+            foreach (TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results)
+            {
+                if (episode.Result != null)
+                    m_episodes.Add(episode.Result); //Add service to internal list
+            }
+            Console.WriteLine("Index data read successfully");
+        }
+
+        private Boolean IsSetup()
+        {
+            if (!File.Exists(m_youtubeDL) || !File.Exists(m_ffmpeg) || !HasIndex())
+                return false;
+            return true;
+        }
+
+        private void Setup()
+        {
+            CleanDirectory(m_dependencyDirectory);
+            CleanDirectory(m_tempDiretory);
+
+            /* Download dependencies */
+            WebClient webClient = new WebClient();
+
+            //youtbe-dl
+            Console.WriteLine("Downloading youtube-dl");
+            webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", m_dependencyDirectory + @"\youtube-dl.exe");
+
+            //ffmpeg
+            Console.WriteLine("Downloading ffmpeg");
+            if (m_systemInfo.CPUArchitecture == SystemInfo.Architecture.x86_64)
+                webClient.DownloadFile("https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win64-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip");
+            else
+                webClient.DownloadFile("https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win32-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip");
+            Console.WriteLine("Extracting ffmpeg");
+            ZipFile.ExtractToDirectory(m_tempDiretory + @"\ffmpeg-3.4.1.zip", m_tempDiretory);
+            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", m_dependencyDirectory + @"\ffmpeg.exe");
+            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffplay.exe", m_dependencyDirectory + @"\ffplay.exe");
+            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe");
+
+            //reindex
+            ReadIndexData(true);
+
+            Console.WriteLine("Setup complete, clearing tmp");
+            CleanDirectory(m_tempDiretory);
+        }
+
+        private void CleanDirectory(String directory)
+        {
+            DirectoryInfo di = new DirectoryInfo(directory);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+
+        public static String RemoveSpecialCharacters(String str)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (Char c in str)
+            {
+                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ')
+                {
+                    sb.Append(c);
+                }
+            }
+            return sb.ToString();
+        }
     }
-  }
 }
