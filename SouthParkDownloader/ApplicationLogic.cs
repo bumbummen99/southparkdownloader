@@ -299,9 +299,10 @@ namespace SouthParkDownloader
 
         private void ReadIndexData(Boolean update = false)
         {
-            if (update && File.Exists(m_indexFile))
+            if (update)
             {
-                File.Delete(m_indexFile);
+                if (File.Exists(m_indexFile))
+                    File.Delete(m_indexFile);
                 DownloadIndex();
             }
 

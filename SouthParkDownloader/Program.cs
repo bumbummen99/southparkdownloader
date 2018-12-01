@@ -12,7 +12,7 @@ namespace SouthParkDownloader
   {
     static void Main( String[] args )
     {
-      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder", "1.0" );
+      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder", "1.1" );
     }
   }
 }
