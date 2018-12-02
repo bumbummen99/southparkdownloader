@@ -1,3 +1,5 @@
 theme: jekyll-theme-slate
 title: SouthPark Downloader
 description: ShouthPark.de Episoden einfach herunterladen
+show_downloads: true
+google_analytics: UA-130173471-2
