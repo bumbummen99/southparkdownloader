@@ -9,35 +9,34 @@ using System.Diagnostics;
 
 using TinyCsvParser;
 
-using SouthParkDownloader.Core;
 using SouthParkDownloader.Functionality;
 using SouthParkDownloader.Types;
 using SouthParkDownloader.CSVMappings;
 
-namespace SouthParkDownloader
+namespace SouthParkDownloader.Logic
 {
-    class ApplicationLogic : Logic
+    class ApplicationLogic : Core.Logic
     {
-        private String m_dependencyDirectory;
-        private String m_dataDiretory;
-        private String m_tempDiretory;
+        public String m_dependencyDirectory;
+        public String m_dataDirectory;
+        public String m_tempDiretory;
         private SystemInfo m_systemInfo;
 
-        private String m_indexFile
+        public String m_indexFile
         {
             get
             {
-                return m_dataDiretory + @"\data.csv";
+                return m_dataDirectory + @"\data.csv";
             }
         }
-        private String m_youtubeDL
+        public String m_youtubeDL
         {
             get
             {
                 return m_dependencyDirectory + @"\youtube-dl.exe";
             }
         }
-        private String m_ffmpeg
+        public String m_ffmpeg
         {
             get
             {
@@ -47,14 +46,27 @@ namespace SouthParkDownloader
 
         private ArrayList m_episodes;
 
-        public ApplicationLogic(String name, String version) : base(name, version)
+        private static ApplicationLogic instance;
+        public static ApplicationLogic Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new ApplicationLogic();
+                }
+                return instance;
+            }
+        }
+
+        private ApplicationLogic() : base("SouthParkDownlaoder", "1.1")
         {
             /* Get information about the system */
             m_systemInfo = (new SystemAnalyzer()).GetInfo();
 
-            /* Setup folder structuren */
+            /* Setup folder structures */
             m_dependencyDirectory = Directory.CreateDirectory(m_workingDirectory + @"\dep").FullName;
-            m_dataDiretory = Directory.CreateDirectory(m_workingDirectory + @"\data").FullName;
+            m_dataDirectory = Directory.CreateDirectory(m_workingDirectory + @"\data").FullName;
             m_tempDiretory = Directory.CreateDirectory(m_workingDirectory + @"\tmp").FullName;
 
             if (!IsSetup())
@@ -64,8 +76,6 @@ namespace SouthParkDownloader
 
             if (HasIndex())
                 ReadIndexData();
-
-            Run();
         }
 
         override public void Tick()
@@ -129,36 +139,16 @@ namespace SouthParkDownloader
 
         private void DownloadEpisode(Episode episode, Boolean overwrite = false)
         {
-            String seasonDir = m_dataDiretory + '/' + episode.Season;
-            String episodeDir = seasonDir + '/' + episode.Number;
+            Directory.CreateDirectory(episode.SeasonDirectory); // Create directories in case they dont exist
+            Directory.CreateDirectory(episode.Directory);
 
-            if (!overwrite && File.Exists(episodeDir + "/dlfinish"))
+            if (File.Exists(episode.Directory + "/dlfinish") && !overwrite)
+                return; // Skip already downloaded episode
+
+            if (!this.YTDLEpisode(episode))
                 return;
 
-            Console.WriteLine("Start downloading Episode " + episode.Number + ' ' + episode.Name);
-
-            Directory.CreateDirectory(seasonDir);
-            Directory.CreateDirectory(episodeDir);
-
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = m_youtubeDL;
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = episodeDir;
-            startInfo.Arguments = episode.Address;
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                CleanDirectory(episodeDir);
-                Console.WriteLine("YoutubeDL failed for some reason.");
-                return;
-            }
-
-            String[] files = Directory.GetFiles(episodeDir);
+            String[] files = Directory.GetFiles(episode.Directory);
             ArrayList videoParts = new ArrayList();
             foreach (String _file in files)
             {
@@ -170,21 +160,46 @@ namespace SouthParkDownloader
                 Int32 index = 0;
                 if (filename.Contains(". Ak-") || filename.Contains(". Akt")) //Deutsch
                     index = Int32.Parse(filename.Substring(filename.IndexOf(". Ak") - 1, 1));
-                else if(filename.Contains("Akt"))
+                else if (filename.Contains("Akt"))
                     index = Int32.Parse(filename.Substring(filename.IndexOf("Akt ") + 4, 1));
-                else if(filename.Contains("Teil "))
+                else if (filename.Contains("Teil "))
                     index = Int32.Parse(filename.Substring(filename.IndexOf("Teil ") + 5, 1));
                 else //Englisch
                     index = Int32.Parse(filename.Substring(filename.IndexOf("Act ") + 4, 1));
 
-                System.IO.File.Move(_file, Path.GetDirectoryName(_file) +"/part"+ index + extension);
+                System.IO.File.Move(_file, Path.GetDirectoryName(_file) + "/part" + index + extension);
                 videoParts.Add(_file);
             }
 
-            File.Create(episodeDir + "/dlfinish");
+            File.Create(episode.Directory + "/dlfinish");
 #if RELEASE
-      File.SetAttributes( episodeDir + "/dlfinish", File.GetAttributes( episodeDir + "/dlfinish" ) | FileAttributes.Hidden );
+            File.SetAttributes( episode.Directory + "/dlfinish", File.GetAttributes( episode.Directory + "/dlfinish" ) | FileAttributes.Hidden );
 #endif
+        }
+
+        private bool YTDLEpisode(Episode episode)
+        {
+            Process process = new Process();
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            startInfo.FileName = m_youtubeDL;
+            startInfo.UseShellExecute = false;
+            startInfo.WorkingDirectory = episode.Directory;
+            startInfo.Arguments = episode.Address;
+            process.StartInfo = startInfo;
+
+            Console.WriteLine("Start downloading Episode " + episode.Number + ' ' + episode.Name);
+            process.Start();
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                CleanDirectory(episode.Directory);
+                Console.WriteLine("YoutubeDL failed for some reason.");
+                return false;
+            }
+
+            return true;
         }
 
         private void Merge()
@@ -197,19 +212,16 @@ namespace SouthParkDownloader
 
         private void MergeEpisode(Episode episode)
         {
-            String seasonDir = m_dataDiretory + '/' + episode.Season;
-            String episodeDir = seasonDir + '/' + episode.Number;
-
-            if (!File.Exists(episodeDir + "/dlfinish"))
+            if (!File.Exists(episode.Directory + "/dlfinish"))
             {
                 Console.WriteLine("No video files to merge!");
                 return;
             }
 
-            if (File.Exists(episodeDir + "/mergefinish"))
+            if (File.Exists(episode.Directory + "/mergefinish"))
                 return;
 
-            String[] files = Directory.GetFiles(episodeDir);
+            String[] files = Directory.GetFiles(episode.Directory);
             ArrayList videoParts = new ArrayList();
             foreach (String _file in files)
             {
@@ -237,7 +249,7 @@ namespace SouthParkDownloader
             }
 
             /* Output parts into files.txt for ffmpeg */
-            StreamWriter fileList = File.CreateText(episodeDir + "/files.txt");
+            StreamWriter fileList = File.CreateText(episode.Directory + "/files.txt");
             foreach (String filePath in sortedParts)
             {
                 fileList.Write("file '" + filePath + '\'' + fileList.NewLine);
@@ -251,7 +263,7 @@ namespace SouthParkDownloader
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.FileName = m_ffmpeg;
             startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = episodeDir;
+            startInfo.WorkingDirectory = episode.Directory;
             startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + outputFileName + '"';
             process.StartInfo = startInfo;
             process.Start();
@@ -269,16 +281,16 @@ namespace SouthParkDownloader
             {
                 File.Delete(oldFile);
             }
-            File.Delete(episodeDir + "/files.txt");
+            File.Delete(episode.Directory + "/files.txt");
 
             /* Add meta data */
-            TagLib.File file = TagLib.File.Create(episodeDir + '/' + outputFileName); // Change file path accordingly.
+            TagLib.File file = TagLib.File.Create(episode.Directory + '/' + outputFileName); // Change file path accordingly.
             file.Tag.Title = episode.Name;
             file.Save();
 
-            File.Create(episodeDir + "/mergefinish");
+            File.Create(episode.Directory + "/mergefinish");
 #if RELEASE
-      File.SetAttributes( episodeDir + "/mergefinish", File.GetAttributes( episodeDir + "/mergefinish" ) | FileAttributes.Hidden );
+            File.SetAttributes( episode.Directory + "/mergefinish", File.GetAttributes( episode.Directory + "/mergefinish" ) | FileAttributes.Hidden );
 #endif
 
         }

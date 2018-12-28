@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace SouthParkDownloader.Core
 {
-  class Logic
+  abstract class Logic
   {
     /* Application tick */
     protected Int64 m_deltaTime = 0;
@@ -31,7 +31,7 @@ namespace SouthParkDownloader.Core
       Console.WriteLine( m_applicationName + " is ready!" );
     }
 
-    protected void Run()
+    public void Run()
     {
       while ( !m_exit )
       {
@@ -50,7 +50,6 @@ namespace SouthParkDownloader.Core
       }
     }
 
-    public virtual void Tick()
-    { }
+    public abstract void Tick();
   }
 }

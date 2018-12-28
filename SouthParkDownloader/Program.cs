@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using SouthParkDownloader;
+
+using SouthParkDownloader.Logic;
 
 namespace SouthParkDownloader
 {
-  class Program
-  {
-    static void Main( String[] args )
+    class Program
     {
-      ApplicationLogic logic = new ApplicationLogic( "SouthParkDownlaoder", "1.1" );
+        static void Main(String[] args)
+        {
+            ApplicationLogic logic = ApplicationLogic.Instance;
+            logic.Run();
+        }
     }
-  }
 }
