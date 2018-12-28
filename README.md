@@ -1,4 +1,6 @@
 # SouthPark Downloader
+[![Seasons](https://img.shields.io/badge/Seasons-22-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
+
 A small C# application to download episodes from southpark.de using ffmpeg and youtube-dl.
 The application will download the neccesary dependencies and provides easy to use commands.
 
