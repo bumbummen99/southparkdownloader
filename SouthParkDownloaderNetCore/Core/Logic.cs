@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections;
 
-namespace SouthParkDownloader.Core
+namespace SouthParkDownloaderNetCore.Core
 {
   abstract class Logic
   {

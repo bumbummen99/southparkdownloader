@@ -2,10 +2,10 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
-using SouthParkDownloader.Functionality;
-using SouthParkDownloader.Logic;
+using SouthParkDownloaderNetCore.Functionality;
+using SouthParkDownloaderNetCore.Logic;
 
-namespace SouthParkDownloader.Types
+namespace SouthParkDownloaderNetCore.Types
 {
     class Episode
     {

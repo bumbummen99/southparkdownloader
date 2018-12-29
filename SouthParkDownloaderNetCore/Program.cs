@@ -1,12 +1,12 @@
 ﻿using System;
 
-using SouthParkDownloader.Logic;
+using SouthParkDownloaderNetCore.Logic;
 
-namespace SouthParkDownloader
+namespace SouthParkDownloaderNetCore
 {
     class Program
     {
-        static void Main(String[] args)
+        static void Main(string[] args)
         {
             ApplicationLogic logic = ApplicationLogic.Instance;
             logic.Run();

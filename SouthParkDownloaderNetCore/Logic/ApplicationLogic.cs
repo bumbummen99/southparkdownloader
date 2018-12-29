@@ -9,12 +9,12 @@ using System.Diagnostics;
 
 using TinyCsvParser;
 
-using SouthParkDownloader.Functionality;
-using SouthParkDownloader.Types;
-using SouthParkDownloader.CSVMappings;
-using SouthParkDownloader.Install;
+using SouthParkDownloaderNetCore.Functionality;
+using SouthParkDownloaderNetCore.Types;
+using SouthParkDownloaderNetCore.CSVMappings;
+using SouthParkDownloaderNetCore.Install;
 
-namespace SouthParkDownloader.Logic
+namespace SouthParkDownloaderNetCore.Logic
 {
     class ApplicationLogic : Core.Logic
     {
@@ -68,10 +68,10 @@ namespace SouthParkDownloader.Logic
             /* Setup folder structures */
             m_setup.setUpFolderStructure();
 
+            m_episodes = new ArrayList();
+
             if (!m_setup.IsSetup())
                 Setup();
-
-            m_episodes = new ArrayList();
 
             if (m_setup.HasIndex())
                 ReadIndexData();

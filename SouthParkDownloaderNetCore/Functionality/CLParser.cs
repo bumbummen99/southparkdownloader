@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Linq;
 
-namespace SouthParkDownloader.Functionality
+namespace SouthParkDownloaderNetCore.Functionality
 {
   class CLParser
   {

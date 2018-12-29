@@ -1,8 +1,8 @@
-﻿using SouthParkDownloader.Logic;
+﻿using SouthParkDownloaderNetCore.Logic;
 using System;
 using System.Diagnostics;
 
-namespace SouthParkDownloader.Functionality
+namespace SouthParkDownloaderNetCore.Functionality
 {
     class YouTubeDL
     {

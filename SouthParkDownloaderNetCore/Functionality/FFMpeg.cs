@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using SouthParkDownloader.Logic;
-using SouthParkDownloader.Types;
+using SouthParkDownloaderNetCore.Logic;
+using SouthParkDownloaderNetCore.Types;
 
-namespace SouthParkDownloader.Functionality
+namespace SouthParkDownloaderNetCore.Functionality
 {
     class FFMpeg
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SouthParkDownloader", "SouthParkDownloader\SouthParkDownloader.csproj", "{AD8D06EC-5F98-42B2-A202-AAD6BB18B398}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SouthParkDownloaderNetCore", "SouthParkDownloaderNetCore\SouthParkDownloaderNetCore.csproj", "{8910E874-AFE3-4084-B15D-2A6C3365F880}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AD8D06EC-5F98-42B2-A202-AAD6BB18B398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD8D06EC-5F98-42B2-A202-AAD6BB18B398}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD8D06EC-5F98-42B2-A202-AAD6BB18B398}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD8D06EC-5F98-42B2-A202-AAD6BB18B398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
