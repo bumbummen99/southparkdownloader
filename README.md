@@ -17,7 +17,7 @@ Simply unzip the latest release and run the included executable, the software wi
 # Linux & OSX
 
 You need to install .net core 2.2, ffmpeg and youtube-dl as the software depends on them.
-Please follow the official documentation on how to install .net core on Linux [here](https://dotnet.microsoft.com/download/linux-package-manager/ubuntu16-04/runtime-2.0.5).
+Please follow the official documentation on how to install .net core on Linux [here](https://dotnet.microsoft.com/download/linux-package-manager/ubuntu18-04/sdk-current).
 
 ```
 sudo apt-get install ffmpeg youtube-dl
