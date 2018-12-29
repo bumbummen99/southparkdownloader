@@ -140,7 +140,7 @@ namespace SouthParkDownloaderNetCore.Types
 
             File.Create(this.Directory + "/mergefinish");
 #if RELEASE
-            File.SetAttributes( episode.Directory + "/mergefinish", File.GetAttributes( episode.Directory + "/mergefinish" ) | FileAttributes.Hidden );
+            File.SetAttributes( this.Directory + "/mergefinish", File.GetAttributes( this.Directory + "/mergefinish" ) | FileAttributes.Hidden );
 #endif
             this.AddMeta();
         }

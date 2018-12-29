@@ -46,6 +46,7 @@ namespace SouthParkDownloaderNetCore.Install
             {
                 Console.WriteLine("Please make sure youtube-dl is installed.");
                 Console.WriteLine("You can install it by typing 'sudo apt install youtube-dl'.");
+                return;
             }
 
             webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", applicationLogic.m_dependencyDirectory + @"\youtube-dl.exe");
@@ -57,6 +58,7 @@ namespace SouthParkDownloaderNetCore.Install
             {
                 Console.WriteLine("Please make sure ffmpeg is installed.");
                 Console.WriteLine("You can install it by typing 'sudo apt install ffmpeg'.");
+                return;
             }
 
             String url;
@@ -84,15 +86,32 @@ namespace SouthParkDownloaderNetCore.Install
 
         public Boolean IsSetup()
         {
-            if (!File.Exists(applicationLogic.m_youtubeDL) || !File.Exists(applicationLogic.m_ffmpeg) || !HasIndex())
-                return false;
+            if ( !HasIndex() )
+            {
+                if (!HasYoutubeDL() || !HasFFMpeg() || !HasIndex())
+                    return false;
+                return true;
+            }
+
             return true;
         }
 
         public Boolean HasIndex()
         {
-            if (!File.Exists(applicationLogic.m_indexFile))
-                return false;
+            return File.Exists(applicationLogic.m_indexFile);
+        }
+
+        public Boolean HasYoutubeDL()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return File.Exists(applicationLogic.m_youtubeDL);
+            return true;
+        }
+
+        public Boolean HasFFMpeg()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return File.Exists(applicationLogic.m_ffmpeg);
             return true;
         }
     }
