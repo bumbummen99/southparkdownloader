@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Linq;
 using System.Text;
-using System.Diagnostics;
 
 using TinyCsvParser;
 

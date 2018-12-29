@@ -1,6 +1,5 @@
 ﻿using SouthParkDownloaderNetCore.Logic;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace SouthParkDownloaderNetCore.Functionality
@@ -20,20 +19,10 @@ namespace SouthParkDownloaderNetCore.Functionality
 
         public static Boolean Download( String url, String directory )
         {
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = ApplicationLogic.Instance.m_youtubeDL;
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = directory;
-            startInfo.Arguments = url;
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-                return false;
-            return true;
+            String arguments = url;
+            if (ProcessHelper.Run(directory, Executable, arguments))
+                return true;
+            return false;
         }
     }
 }

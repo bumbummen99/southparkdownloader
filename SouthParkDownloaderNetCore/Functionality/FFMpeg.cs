@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using SouthParkDownloaderNetCore.Logic;
-using SouthParkDownloaderNetCore.Types;
 
 namespace SouthParkDownloaderNetCore.Functionality
 {
@@ -20,20 +18,10 @@ namespace SouthParkDownloaderNetCore.Functionality
 
         public static Boolean Mux( String directory, String filename )
         {
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = FFMpeg.Executable;
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = directory;
-            startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + filename +  '"';
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-                return false;
-            return true;
+            String arguments = "-f concat -safe 0 -i files.txt -c copy \"" + filename + '"';
+            if (ProcessHelper.Run(directory, Executable, arguments))
+                return true;
+            return false;
         }
     }
 }

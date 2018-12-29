@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.2.0" />
     <PackageReference Include="taglib" Version="2.1.0" />
     <PackageReference Include="TinyCsvParser" Version="2.0.0" />
   </ItemGroup>
