@@ -17,7 +17,7 @@ namespace SouthParkDownloader.Core
     protected String m_applicationName;
     protected String m_applicationVersion;
 
-    protected String m_workingDirectory;
+    public String m_workingDirectory;
 
     public Logic( String name, String version )
     {

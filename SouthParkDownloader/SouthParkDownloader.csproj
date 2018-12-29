@@ -8,9 +8,10 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>SouthParkDownloader</RootNamespace>
     <AssemblyName>SouthParkDownloader</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,15 +54,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functionality\FFMpeg.cs" />
+    <Compile Include="Functionality\FSHelper.cs" />
+    <Compile Include="Functionality\YouTubeDL.cs" />
     <Compile Include="Logic\ApplicationLogic.cs" />
     <Compile Include="Core\Logic.cs" />
     <Compile Include="Functionality\CLParser.cs" />
-    <Compile Include="Functionality\SystemAnalyzer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSVMappings\CsvEpisodeMapping.cs" />
+    <Compile Include="Install\Setup.cs" />
     <Compile Include="Types\Episode.cs" />
-    <Compile Include="Types\SystemInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

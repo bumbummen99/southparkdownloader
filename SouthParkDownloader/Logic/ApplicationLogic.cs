@@ -12,15 +12,16 @@ using TinyCsvParser;
 using SouthParkDownloader.Functionality;
 using SouthParkDownloader.Types;
 using SouthParkDownloader.CSVMappings;
+using SouthParkDownloader.Install;
 
 namespace SouthParkDownloader.Logic
 {
     class ApplicationLogic : Core.Logic
     {
+        private Setup m_setup;
         public String m_dependencyDirectory;
         public String m_dataDirectory;
         public String m_tempDiretory;
-        private SystemInfo m_systemInfo;
 
         public String m_indexFile
         {
@@ -61,20 +62,18 @@ namespace SouthParkDownloader.Logic
 
         private ApplicationLogic() : base("SouthParkDownlaoder", "1.1")
         {
-            /* Get information about the system */
-            m_systemInfo = (new SystemAnalyzer()).GetInfo();
+            /* Setup */
+            m_setup = new Setup(this);
 
             /* Setup folder structures */
-            m_dependencyDirectory = Directory.CreateDirectory(m_workingDirectory + @"\dep").FullName;
-            m_dataDirectory = Directory.CreateDirectory(m_workingDirectory + @"\data").FullName;
-            m_tempDiretory = Directory.CreateDirectory(m_workingDirectory + @"\tmp").FullName;
+            m_setup.setUpFolderStructure();
 
-            if (!IsSetup())
+            if (!m_setup.IsSetup())
                 Setup();
 
             m_episodes = new ArrayList();
 
-            if (HasIndex())
+            if (m_setup.HasIndex())
                 ReadIndexData();
         }
 
@@ -132,181 +131,17 @@ namespace SouthParkDownloader.Logic
         {
             foreach (Episode episode in m_episodes)
             {
-                DownloadEpisode(episode);
-                MergeEpisode(episode);
+                episode.Download();
+                episode.Merge();
             }
-        }
-
-        private void DownloadEpisode(Episode episode, Boolean overwrite = false)
-        {
-            Directory.CreateDirectory(episode.SeasonDirectory); // Create directories in case they dont exist
-            Directory.CreateDirectory(episode.Directory);
-
-            if (File.Exists(episode.Directory + "/dlfinish") && !overwrite)
-                return; // Skip already downloaded episode
-
-            if (!this.YTDLEpisode(episode))
-                return;
-
-            String[] files = Directory.GetFiles(episode.Directory);
-            ArrayList videoParts = new ArrayList();
-            foreach (String _file in files)
-            {
-                String extension = Path.GetExtension(_file);
-                String filename = Path.GetFileNameWithoutExtension(_file);
-                if (extension != ".mp4")
-                    continue;
-
-                Int32 index = 0;
-                if (filename.Contains(". Ak-") || filename.Contains(". Akt")) //Deutsch
-                    index = Int32.Parse(filename.Substring(filename.IndexOf(". Ak") - 1, 1));
-                else if (filename.Contains("Akt"))
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Akt ") + 4, 1));
-                else if (filename.Contains("Teil "))
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Teil ") + 5, 1));
-                else //Englisch
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Act ") + 4, 1));
-
-                System.IO.File.Move(_file, Path.GetDirectoryName(_file) + "/part" + index + extension);
-                videoParts.Add(_file);
-            }
-
-            File.Create(episode.Directory + "/dlfinish");
-#if RELEASE
-            File.SetAttributes( episode.Directory + "/dlfinish", File.GetAttributes( episode.Directory + "/dlfinish" ) | FileAttributes.Hidden );
-#endif
-        }
-
-        private bool YTDLEpisode(Episode episode)
-        {
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = m_youtubeDL;
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = episode.Directory;
-            startInfo.Arguments = episode.Address;
-            process.StartInfo = startInfo;
-
-            Console.WriteLine("Start downloading Episode " + episode.Number + ' ' + episode.Name);
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                CleanDirectory(episode.Directory);
-                Console.WriteLine("YoutubeDL failed for some reason.");
-                return false;
-            }
-
-            return true;
         }
 
         private void Merge()
         {
             foreach (Episode episode in m_episodes)
             {
-                MergeEpisode(episode);
+                episode.Merge();
             }
-        }
-
-        private void MergeEpisode(Episode episode)
-        {
-            if (!File.Exists(episode.Directory + "/dlfinish"))
-            {
-                Console.WriteLine("No video files to merge!");
-                return;
-            }
-
-            if (File.Exists(episode.Directory + "/mergefinish"))
-                return;
-
-            String[] files = Directory.GetFiles(episode.Directory);
-            ArrayList videoParts = new ArrayList();
-            foreach (String _file in files)
-            {
-                String ext = Path.GetExtension(_file);
-                if (Path.GetExtension(_file) != ".mp4")
-                    continue;
-
-                videoParts.Add(_file);
-            }
-
-            /* Sort paths */
-            String[] sortedParts = new String[videoParts.Count];
-            foreach (String part in videoParts)
-            {
-                Int32 index = Int32.Parse(part.Substring(part.IndexOf("part") + 4, 1));
-                if (index == 0)
-                    return; //English episode
-
-                if (index - 1 > 0 && sortedParts[index - 2] == null)
-                {
-                    Console.WriteLine("Missing part " + (index - 1));
-                    return;
-                }
-                sortedParts[index - 1] = part;
-            }
-
-            /* Output parts into files.txt for ffmpeg */
-            StreamWriter fileList = File.CreateText(episode.Directory + "/files.txt");
-            foreach (String filePath in sortedParts)
-            {
-                fileList.Write("file '" + filePath + '\'' + fileList.NewLine);
-            }
-            fileList.Close();
-
-            String outputFileName = RemoveSpecialCharacters(episode.Name) + ".mp4";
-
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.FileName = m_ffmpeg;
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = episode.Directory;
-            startInfo.Arguments = "-f concat -safe 0 -i files.txt -c copy \"" + outputFileName + '"';
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                //CleanDirectory( episodeDir );
-                Console.WriteLine("ffmpeg failed for some reason.");
-                return;
-            }
-
-            /* Delete previous data after successfull concat */
-            foreach (String oldFile in sortedParts)
-            {
-                File.Delete(oldFile);
-            }
-            File.Delete(episode.Directory + "/files.txt");
-
-            /* Add meta data */
-            TagLib.File file = TagLib.File.Create(episode.Directory + '/' + outputFileName); // Change file path accordingly.
-            file.Tag.Title = episode.Name;
-            file.Save();
-
-            File.Create(episode.Directory + "/mergefinish");
-#if RELEASE
-            File.SetAttributes( episode.Directory + "/mergefinish", File.GetAttributes( episode.Directory + "/mergefinish" ) | FileAttributes.Hidden );
-#endif
-
-        }
-
-        private Boolean HasIndex()
-        {
-            if (!File.Exists(m_indexFile))
-                return false;
-            return true;
-        }
-
-        private void DownloadIndex()
-        {
-            File.Delete(m_indexFile);
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.csv", m_indexFile);
         }
 
         private void ReadIndexData(Boolean update = false)
@@ -315,7 +150,7 @@ namespace SouthParkDownloader.Logic
             {
                 if (File.Exists(m_indexFile))
                     File.Delete(m_indexFile);
-                DownloadIndex();
+                m_setup.setUpIndex();
             }
 
             if (!File.Exists(m_indexFile))
@@ -345,69 +180,24 @@ namespace SouthParkDownloader.Logic
             Console.WriteLine("Index data read successfully");
         }
 
-        private Boolean IsSetup()
-        {
-            if (!File.Exists(m_youtubeDL) || !File.Exists(m_ffmpeg) || !HasIndex())
-                return false;
-            return true;
-        }
-
         private void Setup()
         {
-            CleanDirectory(m_dependencyDirectory);
-            CleanDirectory(m_tempDiretory);
-
-            /* Download dependencies */
-            WebClient webClient = new WebClient();
+            FSHelper.CleanDirectory(m_dependencyDirectory);
+            FSHelper.CleanDirectory(m_tempDiretory);
 
             //youtbe-dl
             Console.WriteLine("Downloading youtube-dl");
-            webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", m_dependencyDirectory + @"\youtube-dl.exe");
+            m_setup.setUpYoutubeDL();
 
             //ffmpeg
-            Console.WriteLine("Downloading ffmpeg");
-            if (m_systemInfo.CPUArchitecture == SystemInfo.Architecture.x86_64)
-                webClient.DownloadFile("https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win64-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip");
-            else
-                webClient.DownloadFile("https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-3.4.1-win32-static.zip", m_tempDiretory + @"\ffmpeg-3.4.1.zip");
-            Console.WriteLine("Extracting ffmpeg");
-            ZipFile.ExtractToDirectory(m_tempDiretory + @"\ffmpeg-3.4.1.zip", m_tempDiretory);
-            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", m_dependencyDirectory + @"\ffmpeg.exe");
-            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffplay.exe", m_dependencyDirectory + @"\ffplay.exe");
-            File.Move(m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", m_dependencyDirectory + @"\ffprobe.exe");
+            Console.WriteLine("Downloading & extracting ffmpeg");
+            m_setup.setUpFFMpeg();
 
             //reindex
             ReadIndexData(true);
 
-            Console.WriteLine("Setup complete, clearing tmp");
-            CleanDirectory(m_tempDiretory);
-        }
-
-        private void CleanDirectory(String directory)
-        {
-            DirectoryInfo di = new DirectoryInfo(directory);
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                dir.Delete(true);
-            }
-        }
-
-        public static String RemoveSpecialCharacters(String str)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (Char c in str)
-            {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ')
-                {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
+            Console.WriteLine("Setup complete, clearing tmp directory");
+            FSHelper.CleanDirectory(m_tempDiretory);
         }
     }
 }
