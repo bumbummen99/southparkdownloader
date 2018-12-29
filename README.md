@@ -15,11 +15,27 @@ Feel free to kep the index up-to-date by creating a pull-request.
 The software requires [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) to be installed in order to function properly.
 Simply unzip the latest release and run the included executable, the software will automatically download and install its dependencies (portable) including youtube-dl and ffmpeg.
 
-# Linux & OSX
+# Linux
 You need to install ffmpeg and youtube-dl as the software depends on it.
 
 ```
 sudo apt-get install ffmpeg youtube-dl
+```
+
+Download the latest release for your operating system and unzip it. You can run the software with the following command:
+```
+./SouthParkDownloaderNetCore
+```
+
+# OSX
+You need to install ffmpeg and youtube-dl as the software depends on it.
+
+- [Youtube-DL](https://rg3.github.io/youtube-dl/download.html)
+- [FFMpeg](https://evermeet.cx/ffmpeg/)
+
+Download the latest release for your operating system and unzip it. You can run the software with the following command:
+```
+./SouthParkDownloaderNetCore
 ```
 
 ## Commands
