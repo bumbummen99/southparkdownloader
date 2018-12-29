@@ -6,18 +6,17 @@ A small C# application to download all episodes from [southpark.de](http://www.s
 Feel free to kep the index up-to-date by creating a pull-request.
 
 ## Requirements
-- .net core 2.2+
+- [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) (Windows)
+- youtube-dl (Linux / OSX)
+- ffmpeg (Linux / OSX)
 
 ## Installation
 # Windows
-
 The software requires [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) to be installed in order to function properly.
 Simply unzip the latest release and run the included executable, the software will automatically download and install its dependencies (portable) including youtube-dl and ffmpeg.
 
 # Linux & OSX
-
-You need to install .net core 2.2, ffmpeg and youtube-dl as the software depends on them.
-Please follow the official documentation on how to install .net core on Linux [here](https://dotnet.microsoft.com/download/linux-package-manager/ubuntu18-04/sdk-current).
+You need to install ffmpeg and youtube-dl as the software depends on it.
 
 ```
 sudo apt-get install ffmpeg youtube-dl
