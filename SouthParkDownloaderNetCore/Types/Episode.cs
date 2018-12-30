@@ -19,7 +19,7 @@ namespace SouthParkDownloaderNetCore.Types
         {
             get
             {
-                return 'S'+Season+'E'+Number + FSHelper.RemoveSpecialCharacters(this.Name);
+                return 'S'+Season.ToString()+'E'+Number.ToString() + '-' + FSHelper.RemoveSpecialCharacters(this.Name);
             }
         }
 
@@ -56,6 +56,14 @@ namespace SouthParkDownloaderNetCore.Types
             }
         }
 
+        public String ConsoleTag
+        {
+            get
+            {
+                return "[S" + Season.ToString() + 'E' + Number.ToString() + ']';
+            }
+        }
+
         public void Download(Boolean overwrite = false)
         {
             System.IO.Directory.CreateDirectory(this.SeasonDirectory); // Create directories in case they dont exist
@@ -64,15 +72,25 @@ namespace SouthParkDownloaderNetCore.Types
             if (File.Exists(this.Directory + "/dlfinish") && !overwrite)
                 return; // Skip already downloaded episode
 
-            Console.WriteLine("Start downloading episode " + this.Number + ' ' + this.Name);
+            Console.WriteLine(ConsoleTag + " Starting download " + this.Number + ' ' + this.Name);
             if (!YouTubeDL.Download(this.Address, this.Directory))
             {
                 FSHelper.CleanDirectory(this.Directory);
-                Console.WriteLine("YoutubeDL failed for some reason.");
+                Console.WriteLine(ConsoleTag + " YoutubeDL failed.");
                 return;
             }
-            Console.WriteLine("Finished download of episode " + this.Number);
+            Console.WriteLine(ConsoleTag + " Finished download");
 
+            SortDownloadedParts();
+
+            File.Create(this.Directory + "/dlfinish");
+#if RELEASE
+            File.SetAttributes( this.Directory + "/dlfinish", File.GetAttributes( this.Directory + "/dlfinish" ) | FileAttributes.Hidden );
+#endif
+        }
+
+        private void SortDownloadedParts()
+        {
             /* Sort video parts and rename */
             String[] files = System.IO.Directory.GetFiles(this.Directory);
             ArrayList videoParts = new ArrayList();
@@ -96,18 +114,13 @@ namespace SouthParkDownloaderNetCore.Types
                 File.Move(_file, System.IO.Path.GetDirectoryName(_file) + "/part" + index + extension);
                 videoParts.Add(_file);
             }
-
-            File.Create(this.Directory + "/dlfinish");
-#if RELEASE
-            File.SetAttributes( this.Directory + "/dlfinish", File.GetAttributes( this.Directory + "/dlfinish" ) | FileAttributes.Hidden );
-#endif
         }
 
         public void Merge()
         {
             if (!File.Exists(this.Directory + "/dlfinish"))
             {
-                Console.WriteLine("No video files to merge!");
+                Console.WriteLine(ConsoleTag + " No video files to merge!");
                 return;
             }
 
@@ -116,28 +129,20 @@ namespace SouthParkDownloaderNetCore.Types
 
             var videoFiles = System.IO.Directory.GetFiles(this.Directory, "*.*", SearchOption.AllDirectories)
                 .Where(s => System.IO.Path.GetExtension(s) == this.Extension)
-                .OrderBy(x => Int32.Parse(x.Substring(x.IndexOf("part") + 4, 1)));
+                .OrderBy(x => Int32.Parse(x.Substring(x.IndexOf("part") + 4, 1)))
+                .ToArray<string>();
 
-            /* Output parts into files.txt for ffmpeg */
-            StreamWriter sw = File.CreateText(this.Directory + "/files.txt");
-            foreach (String filePath in videoFiles)
+            Console.WriteLine(ConsoleTag + " Start muxing");
+            if (!FFMpeg.Mux(this.Directory, videoFiles, this.FileName + this.Extension))
             {
-                sw.Write("file '" + filePath + '\'' + sw.NewLine);
-            }
-            sw.Close();
-
-            if (!FFMpeg.Mux(this.Directory, this.FileName + this.Extension))
-            {
-                Console.WriteLine("ffmpeg failed for some reason.");
+                Console.WriteLine(ConsoleTag + " ffmpeg failed for some reason.");
                 return;
             }
+            Console.WriteLine(ConsoleTag + " Successfully muxed episode to \"" + Path + '"');
 
-            /* Delete previous data after successfull muxing */
-            File.Delete(this.Directory + "/files.txt");
+            /* Delete video parts after successfully muxing */
             foreach (String oldFile in videoFiles)
-            {
                 File.Delete(oldFile);
-            }
 
             File.Create(this.Directory + "/mergefinish");
 #if RELEASE
@@ -148,9 +153,11 @@ namespace SouthParkDownloaderNetCore.Types
 
         public void AddMeta()
         {
+            Console.WriteLine(ConsoleTag + " Adding meta information.");
             TagLib.File file = TagLib.File.Create(this.Path); // Change file path accordingly.
             file.Tag.Title = this.Name;
             file.Save();
+            Console.WriteLine(ConsoleTag + " Meta information complete.");
         }
     }
 }

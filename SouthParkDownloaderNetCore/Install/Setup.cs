@@ -29,9 +29,9 @@ namespace SouthParkDownloaderNetCore.Install
         public void setUpFolderStructure()
         {
             /* Setup folder structures */
-            applicationLogic.m_dependencyDirectory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + @"\dep").FullName;
-            applicationLogic.m_dataDirectory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + @"\data").FullName;
-            applicationLogic.m_tempDiretory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + @"\tmp").FullName;
+            applicationLogic.m_dependencyDirectory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + "/dep").FullName;
+            applicationLogic.m_dataDirectory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + "/data").FullName;
+            applicationLogic.m_tempDiretory = Directory.CreateDirectory(applicationLogic.m_workingDirectory + "/tmp").FullName;
         }
 
         public void setUpIndex()
@@ -49,7 +49,7 @@ namespace SouthParkDownloaderNetCore.Install
                 return;
             }
 
-            webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", applicationLogic.m_dependencyDirectory + @"\youtube-dl.exe");
+            webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", applicationLogic.m_dependencyDirectory + "/youtube-dl.exe");
         }
 
         public void setUpFFMpeg()
@@ -77,11 +77,11 @@ namespace SouthParkDownloaderNetCore.Install
                     return;
             }
 
-            webClient.DownloadFile(url, applicationLogic.m_tempDiretory + @"\ffmpeg-3.4.1.zip");
-            ZipFile.ExtractToDirectory(applicationLogic.m_tempDiretory + @"\ffmpeg-3.4.1.zip", applicationLogic.m_tempDiretory);
-            File.Move(applicationLogic.m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffmpeg.exe", applicationLogic.m_dependencyDirectory + @"\ffmpeg.exe");
-            File.Move(applicationLogic.m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffplay.exe", applicationLogic.m_dependencyDirectory + @"\ffplay.exe");
-            File.Move(applicationLogic.m_tempDiretory + @"\ffmpeg-3.4.1-win64-static\bin\ffprobe.exe", applicationLogic.m_dependencyDirectory + @"\ffprobe.exe");
+            webClient.DownloadFile(url, applicationLogic.m_tempDiretory + "/ffmpeg-3.4.1.zip");
+            ZipFile.ExtractToDirectory(applicationLogic.m_tempDiretory + "/ffmpeg-3.4.1.zip", applicationLogic.m_tempDiretory);
+            File.Move(applicationLogic.m_tempDiretory + "/ffmpeg-3.4.1-win64-static/bin/ffmpeg.exe", applicationLogic.m_dependencyDirectory + "/ffmpeg.exe");
+            File.Move(applicationLogic.m_tempDiretory + "/ffmpeg-3.4.1-win64-static/bin/ffplay.exe", applicationLogic.m_dependencyDirectory + "/ffplay.exe");
+            File.Move(applicationLogic.m_tempDiretory + "/ffmpeg-3.4.1-win64-static/bin/ffprobe.exe", applicationLogic.m_dependencyDirectory + "/ffprobe.exe");
         }
 
         public Boolean IsSetup()

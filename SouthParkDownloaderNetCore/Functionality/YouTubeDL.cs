@@ -20,8 +20,9 @@ namespace SouthParkDownloaderNetCore.Functionality
 
         public static Boolean Download( String url, String directory )
         {
-            String arguments = url;
-            if (ProcessHelper.Run(directory, Executable, arguments))
+            String arguments = "-q " + url;
+            String logFile = directory + "/ytdl.log";
+            if (ProcessHelper.Run(directory, Executable, arguments, logFile))
                 return true;
             return false;
         }

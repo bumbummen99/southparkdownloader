@@ -8,6 +8,7 @@ using SouthParkDownloaderNetCore.Types;
 using SouthParkDownloaderNetCore.Install;
 using SouthParkDownloaderNetCore.Database;
 using SouthParkDownloaderNetCore.Helpers;
+using System.Threading;
 
 namespace SouthParkDownloaderNetCore.Logic
 {
@@ -23,36 +24,38 @@ namespace SouthParkDownloaderNetCore.Logic
         {
             get
             {
-                return m_dataDirectory + @"\data.db";
+                return m_dataDirectory + "/data.db";
             }
         }
         public String m_youtubeDL
         {
             get
             {
-                return m_dependencyDirectory + @"\youtube-dl.exe";
+                return m_dependencyDirectory + "/youtube-dl.exe";
             }
         }
         public String m_ffmpeg
         {
             get
             {
-                return m_dependencyDirectory + @"\ffmpeg.exe";
+                return m_dependencyDirectory + "/ffmpeg.exe";
             }
         }
 
         private ArrayList m_episodes;
 
-        private static ApplicationLogic instance;
+        private static int workingCounter = 0;
+        private static int workingLimit = 4;
+        private static int processedCounter = 0;
+
+        private static readonly Lazy<ApplicationLogic> lazy =
+            new Lazy<ApplicationLogic>(() => new ApplicationLogic());
         public static ApplicationLogic Instance
+
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new ApplicationLogic();
-                }
-                return instance;
+                return lazy.Value;
             }
         }
 
@@ -125,10 +128,43 @@ namespace SouthParkDownloaderNetCore.Logic
 
         private void Download()
         {
+            int checkCount = m_episodes.Count;
             foreach (Episode episode in m_episodes)
+            {
+                //wait for free limit...
+                while (workingCounter >= workingLimit)
+                {
+                    Thread.Sleep(100);
+                }
+                workingCounter += 1;
+                ParameterizedThreadStart pts = new ParameterizedThreadStart(ProcessEpisode);
+                Thread th = new Thread(pts);
+                th.Start(episode);
+            }
+
+            //wait for all threads to complete...
+            while (processedCounter < checkCount)
+            {
+                Thread.Sleep(100);
+            }
+        }
+
+        private void ProcessEpisode( object obj )
+        {
+            Episode episode = (Episode)obj;
+            try
             {
                 episode.Download();
                 episode.Merge();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Processing episode error: " + ex.Message);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref workingCounter);
+                Interlocked.Increment(ref processedCounter);
             }
         }
 
