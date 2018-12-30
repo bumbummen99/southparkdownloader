@@ -56,7 +56,7 @@ namespace SouthParkDownloaderNetCore.Logic
             }
         }
 
-        private ApplicationLogic() : base("SouthParkDownloader", "1.1")
+        private ApplicationLogic() : base("SouthParkDownloader", "1.3")
         {
             /* Setup */
             m_setup = new Setup(this);
