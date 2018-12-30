@@ -19,7 +19,7 @@ namespace SouthParkDownloaderNetCore.Types
         {
             get
             {
-                return FSHelper.RemoveSpecialCharacters(this.Name);
+                return 'S'+Season+'E'+Number + FSHelper.RemoveSpecialCharacters(this.Name);
             }
         }
 
