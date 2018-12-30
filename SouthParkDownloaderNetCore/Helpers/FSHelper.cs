@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace SouthParkDownloaderNetCore.Functionality
+namespace SouthParkDownloaderNetCore.Helpers
 {
     class FSHelper
     {

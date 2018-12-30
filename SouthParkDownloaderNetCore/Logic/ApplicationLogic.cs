@@ -7,6 +7,7 @@ using SouthParkDownloaderNetCore.Functionality;
 using SouthParkDownloaderNetCore.Types;
 using SouthParkDownloaderNetCore.Install;
 using SouthParkDownloaderNetCore.Database;
+using SouthParkDownloaderNetCore.Helpers;
 
 namespace SouthParkDownloaderNetCore.Logic
 {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using SouthParkDownloaderNetCore.Functionality;
+using SouthParkDownloaderNetCore.Helpers;
 using SouthParkDownloaderNetCore.Logic;
 
 namespace SouthParkDownloaderNetCore.Types

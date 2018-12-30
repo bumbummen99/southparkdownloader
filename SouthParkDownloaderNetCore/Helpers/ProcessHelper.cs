@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace SouthParkDownloaderNetCore.Functionality
+namespace SouthParkDownloaderNetCore.Helpers
 {
     class ProcessHelper
     {

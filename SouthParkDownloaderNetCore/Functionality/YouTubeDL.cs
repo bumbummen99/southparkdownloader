@@ -1,4 +1,5 @@
-﻿using SouthParkDownloaderNetCore.Logic;
+﻿using SouthParkDownloaderNetCore.Helpers;
+using SouthParkDownloaderNetCore.Logic;
 using System;
 using System.Runtime.InteropServices;
 

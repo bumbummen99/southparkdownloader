@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using SouthParkDownloaderNetCore.Helpers;
 using SouthParkDownloaderNetCore.Logic;
 
 namespace SouthParkDownloaderNetCore.Functionality
