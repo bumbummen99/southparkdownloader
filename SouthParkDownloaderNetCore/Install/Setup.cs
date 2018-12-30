@@ -37,7 +37,7 @@ namespace SouthParkDownloaderNetCore.Install
         public void setUpIndex()
         {
             File.Delete(applicationLogic.m_indexFile);
-            webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.csv", applicationLogic.m_indexFile);
+            webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.db", applicationLogic.m_indexFile);
         }
 
         public void setUpYoutubeDL()

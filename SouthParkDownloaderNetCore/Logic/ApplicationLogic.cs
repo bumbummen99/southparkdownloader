@@ -2,20 +2,18 @@
 using System.Collections;
 using System.IO;
 using System.Linq;
-using System.Text;
-
-using TinyCsvParser;
 
 using SouthParkDownloaderNetCore.Functionality;
 using SouthParkDownloaderNetCore.Types;
-using SouthParkDownloaderNetCore.CSVMappings;
 using SouthParkDownloaderNetCore.Install;
+using SouthParkDownloaderNetCore.Database;
 
 namespace SouthParkDownloaderNetCore.Logic
 {
     class ApplicationLogic : Core.Logic
     {
         private Setup m_setup;
+        private EpisodeDatabase episodeDatabase;
         public String m_dependencyDirectory;
         public String m_dataDirectory;
         public String m_tempDiretory;
@@ -24,7 +22,7 @@ namespace SouthParkDownloaderNetCore.Logic
         {
             get
             {
-                return m_dataDirectory + @"\data.csv";
+                return m_dataDirectory + @"\data.db";
             }
         }
         public String m_youtubeDL
@@ -57,7 +55,7 @@ namespace SouthParkDownloaderNetCore.Logic
             }
         }
 
-        private ApplicationLogic() : base("SouthParkDownlaoder", "1.1")
+        private ApplicationLogic() : base("SouthParkDownloader", "1.1")
         {
             /* Setup */
             m_setup = new Setup(this);
@@ -156,24 +154,19 @@ namespace SouthParkDownloaderNetCore.Logic
                 return;
             }
 
-            /* Setup csv parser options */
-            CsvParserOptions csvParserOptions = new CsvParserOptions(false, ';');
-            CsvEpisodeMapping csvMapper = new CsvEpisodeMapping();
-            CsvParser<Episode> csvParser = new CsvParser<Episode>(csvParserOptions, csvMapper);
+            /* Setup Database */
+            episodeDatabase = new EpisodeDatabase(m_indexFile);
 
             /* Parse csv file */
-            var results = csvParser.ReadFromFile(m_indexFile, Encoding.ASCII).ToList();
+            Episode[] results = episodeDatabase.GetAllEpisodes();
 
             /* Check if we have a result */
-            if (results != null && results.Count <= 0)
+            if (results == null || results.Count() <= 0)
                 return;
 
             /* Process services */
-            foreach (TinyCsvParser.Mapping.CsvMappingResult<Episode> episode in results)
-            {
-                if (episode.Result != null)
-                    m_episodes.Add(episode.Result); //Add service to internal list
-            }
+            foreach (Episode episode in results)
+                    m_episodes.Add(episode); //Add service to internal list
             Console.WriteLine("Index data read successfully");
         }
 
