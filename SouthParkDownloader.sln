@@ -3,18 +3,55 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SouthParkDownloaderNetCore", "SouthParkDownloaderNetCore\SouthParkDownloaderNetCore.csproj", "{8910E874-AFE3-4084-B15D-2A6C3365F880}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SouthParkDLFrontend", "SouthParkDLFrontend\SouthParkDLFrontend.csproj", "{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SouthParkDLCore", "SouthParkDLCore\SouthParkDLCore.csproj", "{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SouthParkDLCommandLine", "SouthParkDLCommandLine\SouthParkDLCommandLine.csproj", "{85A82E67-D727-4C2C-9A10-639A6CD93532}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SouthParkDLFrontendSetup", "SouthParkDLFrontendSetup\SouthParkDLFrontendSetup.vdproj", "{63693158-5B9B-462B-9092-FEFB67B15F98}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611} = {4837A5F4-86DC-4DA7-82ED-D534B6DA3611}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8910E874-AFE3-4084-B15D-2A6C3365F880}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Debug|x64.ActiveCfg = Debug|x64
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Debug|x64.Build.0 = Debug|x64
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Release|x64.ActiveCfg = Release|x64
+		{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}.Release|x64.Build.0 = Release|x64
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Debug|x64.ActiveCfg = Debug|x64
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Debug|x64.Build.0 = Debug|x64
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Release|x64.ActiveCfg = Release|Any CPU
+		{4837A5F4-86DC-4DA7-82ED-D534B6DA3611}.Release|x64.Build.0 = Release|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Debug|x64.ActiveCfg = Debug|x64
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Debug|x64.Build.0 = Debug|x64
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Release|x64.ActiveCfg = Release|Any CPU
+		{85A82E67-D727-4C2C-9A10-639A6CD93532}.Release|x64.Build.0 = Release|Any CPU
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Debug|Any CPU.ActiveCfg = Debug
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Debug|x64.ActiveCfg = Debug
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Debug|x64.Build.0 = Debug
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|Any CPU.ActiveCfg = Release
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|x64.ActiveCfg = Release
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|x64.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
