@@ -15,6 +15,8 @@ Feel free to kep the index up-to-date by creating a pull-request.
 The software requires [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) to be installed in order to function properly.
 Simply unzip the latest release and run the included executable, the software will automatically download and install its dependencies (portable) including youtube-dl and ffmpeg.
 
+You can also use the GUI package which provides an easy to use installer and user interface.
+
 # Linux
 You need to install ffmpeg and youtube-dl as the software depends on it.
 
