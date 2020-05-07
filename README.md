@@ -1,5 +1,5 @@
 # SouthPark Downloader
-[![Seasons](https://img.shields.io/badge/Seasons-22-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
+[![Seasons](https://img.shields.io/badge/Seasons-23-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
 [![Seasons](https://img.shields.io/badge/NetCore-2.2-green.svg)](https://github.com/bumbummen99/southparkdownloader)
 [![Homepage](https://img.shields.io/badge/homepage-skyraptor.eu-informational.svg?style=flat&logo=appveyor)](https://skyraptor.eu)
 
