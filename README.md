@@ -1,6 +1,6 @@
 # SouthPark Downloader
-[![Seasons](https://img.shields.io/badge/Seasons-23-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
-[![Seasons](https://img.shields.io/badge/NetCore-2.2-green.svg)](https://github.com/bumbummen99/southparkdownloader)
+[![Seasons](https://img.shields.io/badge/Seasons-24-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
+[![NetCore](https://img.shields.io/badge/NetCore-2.2-green.svg)](https://github.com/bumbummen99/southparkdownloader)
 [![Homepage](https://img.shields.io/badge/homepage-skyraptor.eu-informational.svg?style=flat&logo=appveyor)](https://skyraptor.eu)
 
 
@@ -20,7 +20,7 @@ Simply unzip the latest release and run the included executable, the software wi
 You can also use the GUI package which provides an easy to use installer and user interface.
 
 # Linux
-You need to install ffmpeg and youtube-dl as the software depends on it.
+You need to install ffmpeg and youtube-dl manually as the software depends on it.
 
 ```
 sudo apt-get install ffmpeg youtube-dl
