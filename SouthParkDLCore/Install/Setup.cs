@@ -58,7 +58,7 @@ namespace SouthParkDLCore.Install
         webClient.DownloadFile("https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2020-10-11-12-31/ffmpeg-N-99531-g2be3eb7f77-win64-gpl.zip", RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.7z");
         ZipFile.ExtractToDirectory(RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.7z", RuntimeConfig.Instance.m_tempDiretory);
       } catch (Exception e) {
-        Console.WriteLine("Could not download ffmpeg, please contact the developer and/or make sure that the hardcoded uri is still valid");
+        Console.WriteLine("Could not download ffmpeg, please contact the developer and/or make sure that the hardcoded uri is still valid. Error: " + e.Message);
         return;
       }
 
@@ -68,7 +68,7 @@ namespace SouthParkDLCore.Install
         File.Move(BuildPath(new string[] { path, "bin", "ffplay.exe" }), BuildPath(new string[] { RuntimeConfig.Instance.m_dependencyDirectory, "ffplay.exe" }));
         File.Move(BuildPath(new string[] { path, "bin", "ffprobe.exe" }), BuildPath(new string[] { RuntimeConfig.Instance.m_dependencyDirectory, "ffprobe.exe" }));
       } catch (Exception e) {
-        Console.WriteLine("Could not complete installation of ffmpeg, there was an error during extraction / installation.");
+        Console.WriteLine("Could not complete installation of ffmpeg, there was an error during extraction / installation. Error: " + e.Message);
       }
     }
 

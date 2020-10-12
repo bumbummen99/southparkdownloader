@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SouthParkDLFrontend", "SouthParkDLFrontend\SouthParkDLFrontend.csproj", "{0B628C5C-FD7B-4E16-8D9B-B5F37C56CF05}"
 EndProject
@@ -50,6 +50,7 @@ Global
 		{63693158-5B9B-462B-9092-FEFB67B15F98}.Debug|x64.ActiveCfg = Debug
 		{63693158-5B9B-462B-9092-FEFB67B15F98}.Debug|x64.Build.0 = Debug
 		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|Any CPU.ActiveCfg = Release
+		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|Any CPU.Build.0 = Release
 		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|x64.ActiveCfg = Release
 		{63693158-5B9B-462B-9092-FEFB67B15F98}.Release|x64.Build.0 = Release
 	EndGlobalSection
