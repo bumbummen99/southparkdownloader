@@ -93,7 +93,7 @@ namespace SouthParkDLCommandLine.Logic
 
         private void PostHelp()
         {
-            Console.WriteLine("setup       Starts the grabbing process. Place data.csv next to the executable.");
+            Console.WriteLine("setup       Downloads and installs/updates the dependencies and the episode database from the GIT repository.");
             Console.WriteLine("index       Load the index file containing episodes from southpark.de");
             Console.WriteLine("  update    Updates and reindexes the index file.\n");
             Console.WriteLine("download    Download the episode from the current index.");
