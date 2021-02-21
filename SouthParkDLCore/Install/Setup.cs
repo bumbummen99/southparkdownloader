@@ -55,8 +55,12 @@ namespace SouthParkDLCore.Install
       }
 
       try {
-        webClient.DownloadFile("https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2020-10-11-12-31/ffmpeg-N-99531-g2be3eb7f77-win64-gpl.zip", RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.7z");
-        ZipFile.ExtractToDirectory(RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.7z", RuntimeConfig.Instance.m_tempDiretory);
+        /* Get the latest FFMPEG release version */
+        String version = webClient.DownloadString('https://www.gyan.dev/ffmpeg/builds/release-version');
+
+        /* Try to download the release from GitHub */
+        webClient.DownloadFile("https://github.com/GyanD/codexffmpeg/releases/download/" + version + "/ffmpeg-" + version + "-full_build.zip", RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.zip");
+        ZipFile.ExtractToDirectory(RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.zip", RuntimeConfig.Instance.m_tempDiretory);
       } catch (Exception e) {
         Console.WriteLine("Could not download ffmpeg, please contact the developer and/or make sure that the hardcoded uri is still valid. Error: " + e.Message);
         return;

@@ -1,0 +1,20 @@
+name: BuildRelease
+
+on:
+  release:
+    types: # This configuration does not affect the page_build event above
+      - created
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup DotNet
+        uses: actions/setup-dotnet@v1
+        with:
+            dotnet-version: '2.2.103'
+    - name: Build
+        run: dotnet build <my project>
