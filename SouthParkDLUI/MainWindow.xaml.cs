@@ -31,6 +31,9 @@ namespace SouthParkDLUI
     private static int workingLimit = 4;
     private static int processedCounter = 0;
 
+    CancellationTokenSource source;
+    CancellationToken token;
+
     public MainWindow()
     {
       InitializeComponent();
@@ -52,9 +55,6 @@ namespace SouthParkDLUI
       if (m_episodes.Count == 0)
         ReadIndexData();
     }
-
-    CancellationTokenSource source;
-    CancellationToken token;
 
     private async void Button_Click(object sender, RoutedEventArgs e)
     { //Download
