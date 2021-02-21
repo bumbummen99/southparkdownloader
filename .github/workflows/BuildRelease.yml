@@ -2,9 +2,7 @@ name: BuildRelease
 
 on:
   workflow_dispatch:
-  release:
-    types: # This configuration does not affect the page_build event above
-      - created
+  push:
 
 jobs:
   build:
