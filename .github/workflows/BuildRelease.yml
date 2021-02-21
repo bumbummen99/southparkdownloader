@@ -16,6 +16,6 @@ jobs:
     - name: Setup DotNet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.12'
+        dotnet-version: '3.1.112'
     - name: Build
       run: dotnet build
