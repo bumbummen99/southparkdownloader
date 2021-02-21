@@ -56,7 +56,7 @@ namespace SouthParkDLCore.Install
 
       try {
         /* Get the latest FFMPEG release version */
-        String version = webClient.DownloadString('https://www.gyan.dev/ffmpeg/builds/release-version');
+        String version = webClient.DownloadString("https://www.gyan.dev/ffmpeg/builds/release-version");
 
         /* Try to download the release from GitHub */
         webClient.DownloadFile("https://github.com/GyanD/codexffmpeg/releases/download/" + version + "/ffmpeg-" + version + "-full_build.zip", RuntimeConfig.Instance.m_tempDiretory + "/ffmpeg.zip");
