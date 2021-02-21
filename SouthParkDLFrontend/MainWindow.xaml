@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SouthParkDLFrontend"
         mc:Ignorable="d"
         Title="SouthParkDL" Height="350.566" Width="542.079"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Background="#FF575757">
     <Grid HorizontalAlignment="Stretch" Height="Auto" Margin="0,0,0,0" VerticalAlignment="Stretch" Width="Auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -22,10 +22,10 @@
         <Button Content="Merge" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,85,5,0" Height="30" Grid.Column="0" Grid.Row="0" Click="Button_Click_2"/>
         <Button Content="Help"  HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,125,5,0" Height="30" Grid.Column="0" Grid.Row="0" Click="Button_Click_3"/>
         <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="0">
-            <TextBlock x:Name="ConsoleBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="10,5,10,10" TextWrapping="Wrap" Height="Auto" Width="Auto" ><Run/><LineBreak/><Run/></TextBlock>
+            <TextBlock x:Name="ConsoleBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Margin="10,5,10,10" TextWrapping="Wrap" Height="Auto" Width="Auto" Background="White" ><Run/><LineBreak/><Run/></TextBlock>
         </ScrollViewer>
         
         <Button Content="Open Folder" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="5,0,5,20" Height="30" Grid.Column="0" Grid.Row="0" Click="Button_Click_Open"/>
-        <TextBlock Name="VersionString" HorizontalAlignment="Left" Margin="5,294,0,0" TextWrapping="Wrap" Text="v1.0" VerticalAlignment="Bottom"/>
+        <TextBlock Name="VersionString" HorizontalAlignment="Left" Margin="5,294,0,0" TextWrapping="Wrap" Text="v1.0" VerticalAlignment="Bottom" Foreground="White"/>
     </Grid>
 </Window>

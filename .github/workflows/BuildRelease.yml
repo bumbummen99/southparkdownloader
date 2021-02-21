@@ -8,13 +8,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup DotNet
-        uses: actions/setup-dotnet@v1
-        with:
-            dotnet-version: '2.2.103'
+    - uses: microsoft/setup-msbuild@v1.0.2
     - name: Build
-        run: dotnet build <my project>
+      run: msbuild
