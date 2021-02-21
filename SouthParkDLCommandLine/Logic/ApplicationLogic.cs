@@ -43,7 +43,7 @@ namespace SouthParkDLCommandLine.Logic
         override protected void BeforeRun()
         {
             /* Setup */
-            m_setup = new Setup();
+            m_setup = new Setup(Array.Exists<string>(m_args, element => element == "ytdlc"));
 
             if (!m_setup.IsSetup())
                 Setup();

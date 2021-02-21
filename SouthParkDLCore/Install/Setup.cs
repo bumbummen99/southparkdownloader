@@ -12,6 +12,8 @@ namespace SouthParkDLCore.Install
   public class Setup
   {
     private WebClient _webClient;
+    private Boolean m_useYoutubeDlCommunity = false;
+
     private WebClient webClient
     {
       get
@@ -20,6 +22,11 @@ namespace SouthParkDLCore.Install
           _webClient = new WebClient();
         return _webClient;
       }
+    }
+
+    public Setup(Boolean useYoutubeDLCommunity = false)
+    {
+      m_useYoutubeDlCommunity = useYoutubeDLCommunity;
     }
 
     public void setUpIndex()
@@ -37,7 +44,11 @@ namespace SouthParkDLCore.Install
         return;
       }
 
-      webClient.DownloadFile("https://yt-dl.org/downloads/latest/youtube-dl.exe", RuntimeConfig.Instance.m_dependencyDirectory + "/youtube-dl.exe");
+      String youtubeDLDownloadURI = "https://yt-dl.org/downloads/latest/youtube-dl.exe";
+      if (m_useYoutubeDlCommunity)
+        youtubeDLDownloadURI = "https://github.com/blackjack4494/youtube-dlc/releases/latest/download/youtube-dlc.exe";
+
+      webClient.DownloadFile(youtubeDLDownloadURI, RuntimeConfig.Instance.m_dependencyDirectory + "/youtube-dl.exe");
     }
 
     public void setUpFFMpeg()

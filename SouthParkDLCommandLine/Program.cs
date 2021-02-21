@@ -1,4 +1,5 @@
 ﻿using SouthParkDLCommandLine.Logic;
+using System;
 
 namespace SouthParkDLCommandLine
 {
@@ -7,7 +8,7 @@ namespace SouthParkDLCommandLine
         static void Main(string[] args)
         {
             ApplicationLogic logic = ApplicationLogic.Instance;
-            logic.Run();
+            logic.Run(args);
         }
     }
 }

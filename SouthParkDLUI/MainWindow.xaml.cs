@@ -34,7 +34,7 @@ namespace SouthParkDLUI
     CancellationTokenSource source;
     CancellationToken token;
 
-    public MainWindow()
+    public MainWindow(string[] args)
     {
       InitializeComponent();
 
@@ -47,7 +47,7 @@ namespace SouthParkDLUI
       Console.SetOut(new ControlWriter(ConsoleBox));
       
       /* Setup */
-      m_setup = new Setup();
+      m_setup = new Setup(Array.Exists<string>(args, element => element == "ytdlc"));
 
       if (!m_setup.IsSetup())
         Setup();

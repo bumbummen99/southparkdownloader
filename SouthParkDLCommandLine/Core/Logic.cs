@@ -7,6 +7,9 @@ namespace SouthParkDLCommandLine.Core
 {
     abstract class Logic
     {
+        /* Arguments */
+        protected string[] m_args;
+
         /* Application tick */
         protected Int64 m_deltaTime = 0;
         protected Int64 m_runTime = 0;
@@ -33,8 +36,10 @@ namespace SouthParkDLCommandLine.Core
             Console.WriteLine(m_applicationName + " is ready!");
         }
 
-        public void Run()
+        public void Run(string[] args)
         {
+            m_args = args;
+
             BeforeRun();
 
             while (!m_exit)
