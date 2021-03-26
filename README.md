@@ -73,9 +73,36 @@ Replaces the local index with an up-to-date version from this repository and rel
 ## Collaborators
 
 <!-- readme: collaborators -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/bumbummen99">
+            <img src="https://avatars.githubusercontent.com/u/4533331?v=4" width="100;" alt="bumbummen99"/>
+            <br />
+            <sub><b>Patrick</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: collaborators -end -->
 
 ## Contributors
 
 <!-- readme: contributors -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/bumbummen99">
+            <img src="https://avatars.githubusercontent.com/u/4533331?v=4" width="100;" alt="bumbummen99"/>
+            <br />
+            <sub><b>Patrick</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/NicoVIII">
+            <img src="https://avatars.githubusercontent.com/u/3983345?v=4" width="100;" alt="NicoVIII"/>
+            <br />
+            <sub><b>NicoVIII</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: contributors -end -->
