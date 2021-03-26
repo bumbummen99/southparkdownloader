@@ -18,13 +18,13 @@ This software does depend on the functionality of YouTubeDL and FFMPEG, YouTubeD
 - ffmpeg (Linux / OSX)
 
 ## Installation
-# Windows
+### Windows
 The software requires [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) to be installed in order to function properly.
 Simply unzip the latest release and run the included executable, the software will automatically download and install its dependencies (portable) including youtube-dl and ffmpeg.
 
 You can also use the GUI package which provides an easy to use installer and user interface.
 
-# Linux
+### Linux
 You need to install ffmpeg and youtube-dl manually as the software depends on it.
 
 ```
@@ -36,7 +36,7 @@ Download the latest release for your operating system and unzip it. You can run 
 ./SouthParkDownloaderNetCore
 ```
 
-# OSX
+### OSX
 You need to install ffmpeg and youtube-dl as the software depends on it.
 
 - [Youtube-DL](https://rg3.github.io/youtube-dl/download.html)
@@ -69,3 +69,13 @@ Reloads the index by reading the local index file.
 
 ### index update
 Replaces the local index with an up-to-date version from this repository and reloads it.
+
+## Collaborators
+
+<!-- readme: collaborators -start -->
+<!-- readme: collaborators -end -->
+
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
