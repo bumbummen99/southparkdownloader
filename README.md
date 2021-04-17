@@ -1,5 +1,6 @@
 # SouthPark Downloader
-[![BuildRelease](https://github.com/bumbummen99/southparkdownloader/actions/workflows/BuildRelease.yml/badge.svg)](https://github.com/bumbummen99/southparkdownloader/actions/workflows/BuildRelease.yml)
+[![Build](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml/badge.svg)](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml)
+[![Publish](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Publish.yml/badge.svg)](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Publish.yml)
 [![Seasons](https://img.shields.io/badge/Seasons-24-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
 [![NetCore](https://img.shields.io/badge/NetCore-3.1-green.svg)](https://github.com/bumbummen99/southparkdownloader)
 [![Homepage](https://img.shields.io/badge/homepage-skyraptor.eu-informational.svg?style=flat&logo=appveyor)](https://skyraptor.eu)
