@@ -1,5 +1,6 @@
 name: Publish
 on:
+  workflow_dispatch:
   release:
     types: [published]
     
@@ -48,6 +49,7 @@ jobs:
         # Delete output directory
         rm -r "$release_name"
     - name: Build UI
+      if: ${{ matrix.kind == 'windows' }}
       shell: bash
       run: |
         # Define some variables for things we need
