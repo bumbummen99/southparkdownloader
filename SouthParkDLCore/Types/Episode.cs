@@ -103,14 +103,14 @@ namespace SouthParkDLCore.Types
                     continue;
 
                 Int32 index = 0;
-                if (filename.Contains(". Ak-") || filename.Contains(". Akt")) //Deutsch
-                    index = Int32.Parse(filename.Substring(filename.IndexOf(". Ak") - 1, 1));
-                else if (filename.Contains("Akt"))
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Akt ") + 4, 1));
-                else if (filename.Contains("Teil "))
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Teil ") + 5, 1));
-                else //Englisch
-                    index = Int32.Parse(filename.Substring(filename.IndexOf("Act ") + 4, 1));
+                foreach (String partNumberString in new String[] { "Comedy Central S" })
+                {
+                    if (filename.Contains(partNumberString))
+                    {
+                        index = Int32.Parse(filename.Substring(filename.IndexOf(partNumberString) + partNumberString.Length, 1));
+                        break;
+                    }
+                }
 
                 File.Move(_file, System.IO.Path.GetDirectoryName(_file) + "/part" + index + extension);
                 videoParts.Add(_file);

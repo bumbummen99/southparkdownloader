@@ -9,6 +9,15 @@
     <Version>1.6.0</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\SouthParkDLCore\SouthParkDLCore.csproj" />
   </ItemGroup>

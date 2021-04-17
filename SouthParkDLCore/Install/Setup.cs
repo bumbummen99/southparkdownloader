@@ -89,14 +89,7 @@ namespace SouthParkDLCore.Install
 
     public Boolean IsSetup()
     {
-      if (!HasIndex())
-      {
-        if (!HasYoutubeDL() || !HasFFMpeg() || !HasIndex())
-          return false;
-        return true;
-      }
-
-      return true;
+      return HasIndex() && HasYoutubeDL() && HasFFMpeg();
     }
 
     public Boolean HasIndex()

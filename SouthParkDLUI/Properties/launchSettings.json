@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SouthParkDLUI": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

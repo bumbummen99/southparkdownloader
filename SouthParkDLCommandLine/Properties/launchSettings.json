@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SouthParkDLCommandLine": {
+      "commandName": "Project",
+      "commandLineArgs": "ytdlc",
+      "nativeDebugging": true
+    }
+  }
+}

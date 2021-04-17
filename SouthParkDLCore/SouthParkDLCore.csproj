@@ -8,6 +8,15 @@
     <Version>3.0.0</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="taglib-sharp-netstandard2.0" Version="2.1.0" />
