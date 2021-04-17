@@ -72,6 +72,7 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 File.WriteAllText(logFile, output);
             }
 
+            
             if (errorLogFile != null)
             {
                 String error = process.StandardError.ReadToEnd();

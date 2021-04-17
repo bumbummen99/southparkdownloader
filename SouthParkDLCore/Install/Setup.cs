@@ -31,6 +31,8 @@ namespace SouthParkDLCore.Install
 
     public void setUpIndex()
     {
+      Console.WriteLine("Updating episode index...");
+
       File.Delete(RuntimeConfig.Instance.m_indexFile);
       webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.db", RuntimeConfig.Instance.m_indexFile);
     }
@@ -48,11 +50,15 @@ namespace SouthParkDLCore.Install
       if (m_useYoutubeDlCommunity)
         youtubeDLDownloadURI = "https://github.com/blackjack4494/youtube-dlc/releases/latest/download/youtube-dlc.exe";
 
+      Console.WriteLine("Downloading youtube-dl" + (m_useYoutubeDlCommunity ? "c" : "") + "...");
+
       webClient.DownloadFile(youtubeDLDownloadURI, RuntimeConfig.Instance.m_dependencyDirectory + "/youtube-dl.exe");
     }
 
     public void setUpFFMpeg()
     {
+      Console.WriteLine("Downloading & extracting ffmpeg...");
+
       if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
       {
         Console.WriteLine("Unsupported operating detected, can not install ffmpeg automatically!");

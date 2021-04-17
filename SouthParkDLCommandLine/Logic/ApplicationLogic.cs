@@ -21,7 +21,11 @@ namespace SouthParkDLCommandLine.Logic
         private ArrayList m_episodes;
 
         private static int workingCounter = 0;
+#if DEBUG
+        private static int workingLimit = 1;
+#else
         private static int workingLimit = 4;
+#endif
         private static int processedCounter = 0;
 
         private static readonly Lazy<ApplicationLogic> lazy = new Lazy<ApplicationLogic>(() => new ApplicationLogic());
@@ -192,16 +196,12 @@ namespace SouthParkDLCommandLine.Logic
             DirectoryHelper.DeleteContents(RuntimeConfig.Instance.m_dependencyDirectory);
             DirectoryHelper.DeleteContents(RuntimeConfig.Instance.m_tempDiretory);
 
-            //youtbe-dl
-            Console.WriteLine("Downloading youtube-dl...");
             m_setup.setUpYoutubeDL();
 
             //ffmpeg
-            Console.WriteLine("Downloading & extracting ffmpeg...");
             m_setup.setUpFFMpeg();
 
             //reindex
-            Console.WriteLine("Updating episode index...");
             ReadIndexData(true);
 
             DirectoryHelper.DeleteContents(RuntimeConfig.Instance.m_tempDiretory);
