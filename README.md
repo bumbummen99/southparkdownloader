@@ -103,6 +103,13 @@ Replaces the local index with an up-to-date version from this repository and rel
             <br />
             <sub><b>NicoVIII</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/TH42">
+            <img src="https://avatars.githubusercontent.com/u/24369300?v=4" width="100;" alt="TH42"/>
+            <br />
+            <sub><b>TH42</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
