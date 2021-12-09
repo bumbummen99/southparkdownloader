@@ -13,7 +13,7 @@ This software is just a fancy wrapper around YouTubeDL and FFMPEG specifically c
 This software does depend on the functionality of YouTubeDL and FFMPEG, YouTubeDL can break **anytime** due to it's nature in being dependet itself on the site you are trying to download from i.e. if SouthPark.de changes YouTubeDL can be incompatible. For these situations you might want to use the YouTubeDL Community Fork, a fork that incorporates fixes for YouTubeDL much faster. You can add the parameter `ytdlc` to the startup of SouthParkDL in order to use YouTubeDL Community instead of the official version on Windows. For other platforms, please follow the installation notes (just replace youtube-dl with youtube-dlc).
 
 ## Requirements
-- [Microsoft Visual C++ 2010 Redistributable Package (x86)](https://www.microsoft.com/en-US/download/details.aspx?id=5555) (Windows)
+- [Latest VC Redist x64 and x86](https://docs.microsoft.com/de-DE/cpp/windows/latest-supported-vc-redist?view=msvc-170) (Windows)
 - youtube-dl (Linux / OSX)
 - ffmpeg (Linux / OSX)
 
