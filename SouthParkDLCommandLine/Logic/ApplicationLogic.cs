@@ -18,7 +18,7 @@ namespace SouthParkDLCommandLine.Logic
         private RuntimeConfig runtimeConfig;
         private EpisodeDatabase episodeDatabase;
 
-        private ArrayList m_episodes;
+        private ArrayList m_episodes = null;
 
         private static int workingCounter = 0;
 #if DEBUG
@@ -185,8 +185,9 @@ namespace SouthParkDLCommandLine.Logic
                 return;
 
             /* Process services */
+            m_episodes = new ArrayList();
             foreach (Episode episode in results)
-                    m_episodes.Add(episode); //Add service to internal list
+                m_episodes.Add(episode); //Add service to internal list
             Console.WriteLine("Loaded episode index.");
         }
 
