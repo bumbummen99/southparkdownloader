@@ -34,7 +34,7 @@ namespace SouthParkDLCore.Install
       Console.WriteLine("Updating episode index...");
 
       File.Delete(RuntimeConfig.Instance.m_indexFile);
-      webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/data.db", RuntimeConfig.Instance.m_indexFile);
+      webClient.DownloadFile("https://bumbummen99.github.io/southparkdownloader/deutsch.db", RuntimeConfig.Instance.m_indexFile);
     }
 
     public void setUpYoutubeDL()

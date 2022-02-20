@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Figgle;
 
 namespace SouthParkDLCommandLine.Core
 {
@@ -28,8 +27,7 @@ namespace SouthParkDLCommandLine.Core
             m_applicationName = name;
             m_applicationVersion = AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString();
             
-            Console.WriteLine(FiggleFonts.Standard.Render(m_applicationName + " v" + m_applicationVersion));
-
+            Console.WriteLine(m_applicationName + " v" + m_applicationVersion);
 
             m_workingDirectory = Directory.GetCurrentDirectory();
 
