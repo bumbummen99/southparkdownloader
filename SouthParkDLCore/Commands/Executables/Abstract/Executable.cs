@@ -96,7 +96,13 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                bool success = (timeout > 0 ? process.WaitForExit(timeout) : process.WaitForExit()) && outputWaitHandle.WaitOne(timeout) && errorWaitHandle.WaitOne(timeout);
+                bool success = false;
+                if (timeout > 0) {
+                    success = process.WaitForExit(timeout) && outputWaitHandle.WaitOne(timeout) && errorWaitHandle.WaitOne(timeout);
+                } else {
+                    process.WaitForExit() && outputWaitHandle.WaitOne() && errorWaitHandle.WaitOne();
+                    success = true;
+                }
                 
                 if (logFile != null)
                 {
