@@ -39,27 +39,27 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
         public Boolean Run(String arguments, String logFile = null, String errorLogFile = null, int timeout = 10)
         {
             process = new Process();
-            process.startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                process.startInfo.FileName = this.Cmd;
+                process.StartInfo.FileName = this.Cmd;
             else
-                process.startInfo.FileName = "/bin/bash";
+                process.StartInfo.FileName = "/bin/bash";
 
-            process.startInfo.UseShellExecute = false;
-            process.startInfo.WorkingDirectory = WorkingDirectory;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.WorkingDirectory = WorkingDirectory;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                process.startInfo.Arguments = arguments;
+                process.StartInfo.Arguments = arguments;
             else
             {
                 var escapedArgs = (this.Cmd + ' ' + arguments).Replace("\"", "\\\"");
-                process.startInfo.Arguments = $"-c \"{escapedArgs}\"";
+                process.StartInfo.Arguments = $"-c \"{escapedArgs}\"";
             }
 
-            process.startInfo.RedirectStandardOutput = true;
-            processstartInfo.RedirectStandardError = true;
-            processstartInfo.CreateNoWindow = true;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
             
             StringBuilder output = new StringBuilder();
             StringBuilder error = new StringBuilder();
