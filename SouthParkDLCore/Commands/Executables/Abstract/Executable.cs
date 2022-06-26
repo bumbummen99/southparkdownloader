@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
