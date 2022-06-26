@@ -38,7 +38,7 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 process.Close();
         }
 
-        public Boolean Run(String arguments, String logFile = null, String errorLogFile = null, int timeout = 10)
+        public Boolean Run(String arguments, String logFile = null, String errorLogFile = null, int timeout = 10000)
         {
             process = new Process();
             process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
