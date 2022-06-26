@@ -100,14 +100,12 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 
                 if (logFile != null)
                 {
-                    String output = process.StandardOutput.ReadToEnd();
                     File.WriteAllText(logFile, output);
                 }
 
 
                 if (errorLogFile != null)
                 {
-                    String error = process.StandardError.ReadToEnd();
                     File.WriteAllText(errorLogFile, error);
                 }
                 
