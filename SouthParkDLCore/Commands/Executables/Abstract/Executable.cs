@@ -119,8 +119,6 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 
                 return success ? process.ExitCode != 0 : false;
             }
-            
-            return false;
         }
     }
 }
