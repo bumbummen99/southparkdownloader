@@ -100,7 +100,9 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 if (timeout > 0) {
                     success = process.WaitForExit(timeout) && outputWaitHandle.WaitOne(timeout) && errorWaitHandle.WaitOne(timeout);
                 } else {
-                    process.WaitForExit() && outputWaitHandle.WaitOne() && errorWaitHandle.WaitOne();
+                    process.WaitForExit();
+                    outputWaitHandle.WaitOne();
+                    errorWaitHandle.WaitOne();
                     success = true;
                 }
                 
