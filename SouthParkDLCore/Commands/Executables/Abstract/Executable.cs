@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Diagnostics;
+using System.Text;
+using System.Threading;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -36,52 +38,87 @@ namespace SouthParkDLCore.Commands.Executables.Abstract
                 process.Close();
         }
 
-        public Boolean Run(String arguments, String logFile = null, String errorLogFile = null)
+        public Boolean Run(String arguments, String logFile = null, String errorLogFile = null, int timeout = 10000)
         {
             process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                startInfo.FileName = this.Cmd;
+                process.StartInfo.FileName = this.Cmd;
             else
-                startInfo.FileName = "/bin/bash";
+                process.StartInfo.FileName = "/bin/bash";
 
-            startInfo.UseShellExecute = false;
-            startInfo.WorkingDirectory = WorkingDirectory;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.WorkingDirectory = WorkingDirectory;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                startInfo.Arguments = arguments;
+                process.StartInfo.Arguments = arguments;
             else
             {
                 var escapedArgs = (this.Cmd + ' ' + arguments).Replace("\"", "\\\"");
-                startInfo.Arguments = $"-c \"{escapedArgs}\"";
+                process.StartInfo.Arguments = $"-c \"{escapedArgs}\"";
             }
 
-            startInfo.RedirectStandardOutput = logFile != null;
-            startInfo.RedirectStandardError = errorLogFile != null;
-            startInfo.CreateNoWindow = true;
-
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit();
-
-            if (logFile != null)
-            {
-                String output = process.StandardOutput.ReadToEnd();
-                File.WriteAllText(logFile, output);
-            }
-
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
             
-            if (errorLogFile != null)
+            StringBuilder output = new StringBuilder();
+            StringBuilder error = new StringBuilder();
+            
+            using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
+            using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
             {
-                String error = process.StandardError.ReadToEnd();
-                File.WriteAllText(errorLogFile, error);
-            }
+                process.OutputDataReceived += (sender, e) => {
+                    if (e.Data == null)
+                    {
+                        outputWaitHandle.Set();
+                    }
+                    else
+                    {
+                        output.AppendLine(e.Data);
+                    }
+                };
+                process.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data == null)
+                    {
+                        errorWaitHandle.Set();
+                    }
+                    else
+                    {
+                        error.AppendLine(e.Data);
+                    }
+                };
 
-            if (process.ExitCode != 0)
-                return false;
-            return true;
+                process.Start();
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                bool success = false;
+                if (timeout > 0) {
+                    success = process.WaitForExit(timeout) && outputWaitHandle.WaitOne(timeout) && errorWaitHandle.WaitOne(timeout);
+                } else {
+                    process.WaitForExit();
+                    outputWaitHandle.WaitOne();
+                    errorWaitHandle.WaitOne();
+                    success = true;
+                }
+                
+                if (logFile != null)
+                {
+                    File.WriteAllText(logFile, output.ToString());
+                }
+
+
+                if (errorLogFile != null)
+                {
+                    File.WriteAllText(errorLogFile, error.ToString());
+                }
+                
+                return success ? process.ExitCode != 0 : false;
+            }
         }
     }
 }

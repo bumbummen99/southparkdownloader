@@ -26,7 +26,7 @@ namespace SouthParkDLCore.Commands.Executables
             String arguments = "-q " + url;
             String logFile = WorkingDirectory + "/ytdl.log";
 
-            return Run(arguments, logFile);
+            return Run(arguments, logFile, null, 0);
         }
     }
 }
