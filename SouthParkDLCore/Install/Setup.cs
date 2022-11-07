@@ -46,9 +46,8 @@ namespace SouthParkDLCore.Install
         return;
       }
 
-      String youtubeDLDownloadURI = "https://yt-dl.org/downloads/latest/youtube-dl.exe";
-      if (m_useYoutubeDlCommunity)
-        youtubeDLDownloadURI = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
+      // Always use yt-dlp. 
+      String youtubeDLDownloadURI = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe";
 
       Console.WriteLine("Downloading youtube-dl" + (m_useYoutubeDlCommunity ? "c" : "") + "...");
 
