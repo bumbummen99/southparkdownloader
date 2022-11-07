@@ -134,8 +134,9 @@ namespace SouthParkDLCommandLine.Logic
             Episode episode = (Episode)obj;
             try
             {
-                episode.Download();
-                episode.Merge();
+                bool sucessfullDownload = episode.Download();
+                if (sucessfullDownload)
+                    episode.Merge();
             }
             catch (Exception ex)
             {

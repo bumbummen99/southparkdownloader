@@ -64,22 +64,27 @@ namespace SouthParkDLCore.Types
             }
         }
 
-        public void Download(Boolean overwrite = false)
+        public bool Download(Boolean overwrite = false)
         {
             System.IO.Directory.CreateDirectory(this.SeasonDirectory); // Create directories in case they dont exist
             System.IO.Directory.CreateDirectory(this.Directory);
 
-            if (File.Exists(this.Directory + "/dlfinish") && !overwrite)
-                return; // Skip already downloaded episode
-
+            if (File.Exists(this.Directory + "/dlfinish") && !overwrite) {
+                Console.WriteLine(ConsoleTag + " Already downloaded " + this.Number + ' ' + this.Name);
+                return false; // Skip already downloaded episode
+            }
             Console.WriteLine(ConsoleTag + " Starting download " + this.Number + ' ' + this.Name);
             YouTubeDL ytdl = new YouTubeDL(this.Directory);
+            ytdl.Download(this.Address);
+            /*
+             * TODO: Return values of run method not working correctly
             if (!ytdl.Download(this.Address))
             {
                 DirectoryHelper.DeleteContents(this.Directory);
                 Console.WriteLine(ConsoleTag + " YoutubeDL failed.");
                 return;
             }
+            */
             Console.WriteLine(ConsoleTag + " Finished download");
 
             SortDownloadedParts();
@@ -87,7 +92,8 @@ namespace SouthParkDLCore.Types
             File.Create(this.Directory + "/dlfinish");
 #if RELEASE
             File.SetAttributes( this.Directory + "/dlfinish", File.GetAttributes( this.Directory + "/dlfinish" ) | FileAttributes.Hidden );
-#endif
+#endif      
+            return true;
         }
 
         private void SortDownloadedParts()
@@ -135,11 +141,15 @@ namespace SouthParkDLCore.Types
 
             Console.WriteLine(ConsoleTag + " Start muxing");
             FFMpeg ffmpeg = new FFMpeg(this.Directory);
+            ffmpeg.Mux(videoFiles, this.FileName + this.Extension);
+            /*
+             * TODO: Return values of run method not working correctly
             if (!ffmpeg.Mux(videoFiles, this.FileName + this.Extension))
             {
                 Console.WriteLine(ConsoleTag + " ffmpeg failed for some reason.");
                 return;
             }
+            */
             Console.WriteLine(ConsoleTag + " Successfully muxed episode to \"" + Path + '"');
 
             /* Delete video parts after successfully muxing */
