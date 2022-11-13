@@ -98,6 +98,13 @@ Replaces the local index with an up-to-date version from this repository and rel
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/PPrzemko">
+            <img src="https://avatars.githubusercontent.com/u/38755500?v=4" width="100;" alt="PPrzemko"/>
+            <br />
+            <sub><b>TheWhiteSheep</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/NicoVIII">
             <img src="https://avatars.githubusercontent.com/u/3983345?v=4" width="100;" alt="NicoVIII"/>
             <br />
