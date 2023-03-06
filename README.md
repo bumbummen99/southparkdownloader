@@ -1,3 +1,12 @@
+# Important Notice
+I have **created this software several years ago **in order to** learn C#** as well as **to fit the void of available downloaders for south-park.de**. While solutions do and did already exist i could not find anything that handled dependencies, merged the episode parts as well or to plain out work out of the box. While this software **has been a great experience for me** on how to do and how to not do things in C# **i do not have the time to maintain** a project written in a language i am not actively using. Besides that, i have **written this software mostly from scratch without much experience** in C# insulting in ***not optimal* code that does increase the complexity and required maintenance** by reinventing the wheel and the project not meeting it's initial goal.  
+
+**With South Park also being available on Amazon Prime as well as Netflix i did not see much benefit in putting a lot of effort in this software, but this has changed with South Park deciding to start the *streaming wars* and become a Paramount+ exclusive.** While i, as a long time fan,  do support South Park **i can not support a streaming platform like Paramount+ for the following reasons:**
+- It is/was simply not available in my location
+- It is limited to 720p very low bitrate on anything else but a player with DRM hell installed
+
+**For a service that i have to pay for and also pay the VPN this is simply unacceptable. I therefore decided to re-activate this project with a complete re-write** in TypeScript and using Docker for simple dependency management and cross-platform compatibility. You can find the new version of South Park Downloader in [it's new repository](https://github.com/bumbummen99/southpark-downloader). This does mean that the software in THIS repository will no longer be actively developed or maintained, but **i will still try to assist issues and encurage users to try the new version.**
+
 # SouthPark Downloader
 [![Build](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml/badge.svg)](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml)
 [![Seasons](https://img.shields.io/badge/Seasons-24-brightgreen.svg)](https://github.com/bumbummen99/southparkdownloader)
