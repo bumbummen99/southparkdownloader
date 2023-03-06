@@ -1,11 +1,13 @@
 # Important Notice
-I have **created this software several years ago **in order to** learn C#** as well as **to fit the void of available downloaders for south-park.de**. While solutions do and did already exist i could not find anything that handled dependencies, merged the episode parts as well or to plain out work out of the box. While this software **has been a great experience for me** on how to do and how to not do things in C# **i do not have the time to maintain** a project written in a language i am not actively using. Besides that, i have **written this software mostly from scratch without much experience** in C# insulting in ***not optimal* code that does increase the complexity and required maintenance** by reinventing the wheel and the project not meeting it's initial goal.  
+**Several years ago, I created this software** as a personal project **to learn C#** and **provide a downloader for south-park.de**. While there were existing solutions, they lacked necessary features such as handling dependencies and merging episode parts. While **this project was a great learning experience for me**, I am no longer actively using the language and do not have the time to maintain it. Additionally, **the code was written from scratch with limited experience** in C#, **resulting in suboptimal code that increased complexity and maintenance** requirements.
 
-**With South Park also being available on Amazon Prime as well as Netflix i did not see much benefit in putting a lot of effort in this software, but this has changed with South Park deciding to start the *streaming wars* and become a Paramount+ exclusive.** While i, as a long time fan,  do support South Park **i can not support a streaming platform like Paramount+ for the following reasons:**
-- It is/was simply not available in my location
-- It is limited to 720p very low bitrate on anything else but a player with DRM hell installed
+While South Park was widely available on streaming platforms such as Amazon Prime and Netflix, it has now become a Paramount+ exclusive, sparking the so called "streaming wars." As a long-time fan of the show, I cannot support Paramount+ due to the following reasons:
+- It is/was unavailable in my location
+- It is limited to 720p low bitrate on anything else than a native player with DRM
 
-**For a service that i have to pay for and also pay the VPN this is simply unacceptable. I therefore decided to re-activate this project with a complete re-write** in TypeScript and using Docker for simple dependency management and cross-platform compatibility. You can find the new version of South Park Downloader in [it's new repository](https://github.com/bumbummen99/southpark-downloader). This does mean that the software in THIS repository will no longer be actively developed or maintained, but **i will still try to assist issues and encurage users to try the new version.**
+Thse limitations are not acceptable to me in regards to a service that i do have to pay for monthly. Therefore, I have decided to re-activate this project with a complete re-write in TypeScript and using Docker for simple dependency management and cross-platform compatibility. The new version of South Park Downloader can be found in [its new repository](https://github.com/bumbummen99/southpark-downloader). 
+
+Please note that this repository will no longer be actively developed or maintained. However, I will still try to assist with issues and encourage users to try the new version. Thank you for your understanding.
 
 # SouthPark Downloader
 [![Build](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml/badge.svg)](https://github.com/bumbummen99/southparkdownloader/actions/workflows/Build.yml)
