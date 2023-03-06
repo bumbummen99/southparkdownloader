@@ -1,11 +1,11 @@
 # Important Notice
 **Several years ago, I created this software** as a personal project **to learn C#** and **provide a downloader for south-park.de**. While there were existing solutions, they lacked necessary features such as handling dependencies and merging episode parts. While **this project was a great learning experience for me**, I am no longer actively using the language and do not have the time to maintain it. Additionally, **the code was written from scratch with limited experience** in C#, **resulting in suboptimal code that increased complexity and maintenance** requirements.
 
-While South Park was widely available on streaming platforms such as Amazon Prime and Netflix, it has now become a Paramount+ exclusive, sparking the so called "streaming wars." As a long-time fan of the show, I cannot support Paramount+ due to the following reasons:
+While **South Park was widely available on streaming platforms such as Amazon Prime and Netflix**, it **has now become a Paramount+ exclusive**, sparking the so called "streaming wars." As a long-time fan of the show, **I cannot support Paramount+ due to the following reasons:**
 - It is/was unavailable in my location
 - It is limited to 720p low bitrate on anything else than a native player with DRM
 
-Thse limitations are not acceptable to me in regards to a service that i do have to pay for monthly. Therefore, I have decided to re-activate this project with a complete re-write in TypeScript and using Docker for simple dependency management and cross-platform compatibility. The new version of South Park Downloader can be found in [its new repository](https://github.com/bumbummen99/southpark-downloader). 
+**These limitations are not acceptable to me in regards to a service that i do have to pay for monthly. Therefore, I have decided to re-activate this project with a complete re-write** in TypeScript and using Docker for simple dependency management and cross-platform compatibility. The new version of South Park Downloader can be found in [its new repository](https://github.com/bumbummen99/southpark-downloader). 
 
 Please note that this repository will no longer be actively developed or maintained. However, I will still try to assist with issues and encourage users to try the new version. Thank you for your understanding.
 
