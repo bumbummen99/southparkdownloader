@@ -5,7 +5,7 @@ While **South Park was widely available on streaming platforms such as Amazon Pr
 - It is/was unavailable in my location
 - It is limited to 720p low bitrate on anything else than a native player with DRM
 
-**These limitations are not acceptable to me in regards to a service that i do have to pay for monthly. Therefore, I have decided to re-activate this project with a complete re-write** in TypeScript and using Docker for simple dependency management and cross-platform compatibility. The new version of South Park Downloader can be found in [its new repository](https://github.com/bumbummen99/southpark-downloader). 
+**These limitations are not acceptable to me in regards to a service that i do have to pay for monthly. Therefore, I have decided to re-activate this project with a complete re-write** in TypeScript and using Docker for simple dependency management and cross-platform compatibility. The new version of South Park Downloader can be found in [its new repository](https://github.com/South-Park-Downloader/southpark-downloader). 
 
 Please note that this repository will no longer be actively developed or maintained. However, I will still try to assist with issues and encourage users to try the new version. Thank you for your understanding.
 
